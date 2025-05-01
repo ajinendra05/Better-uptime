@@ -1,8 +1,21 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/uptime_db
+    url: jdbc:postgresql://localhost:5432/uptime_db
     username: ajinendra05
     password: SpringBootPassword
   jpa:
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ajinendra2015@gmail.com
+    password: mieb ctec rjej zagz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000

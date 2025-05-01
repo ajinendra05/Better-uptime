@@ -44,10 +44,17 @@ services:
     depends_on:
       - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/uptime_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/uptime_db
       SPRING_DATASOURCE_USERNAME: ajinendra05  # Updated username
       SPRING_DATASOURCE_PASSWORD: SpringBootPassword  # Updated password
       SPRING_JPA_HIBERNATE_DDL-AUTO: update
 
 volumes:
   postgres_data:
+
+
+#   When running through mvn spring-boot:run, use localhost
+
+# When running in Docker container, use postgres as hostname
+
+# You can't mix these approaches

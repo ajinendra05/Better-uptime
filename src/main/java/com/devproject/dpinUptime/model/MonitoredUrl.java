@@ -12,9 +12,17 @@ public class MonitoredUrl {
      @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String userEmail;
     private String url;
     private boolean isUp;
     private LocalDateTime lastChecked;
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
     public Long getId() {
         return id;
     }
