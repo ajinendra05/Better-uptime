@@ -1,23 +1,23 @@
 package com.devproject.dpinUptime.controller;
 
 import java.security.Principal;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.ui.Model;
 import com.devproject.dpinUptime.service.UrlMonitoringService;
-// Adjusted package name if it is 'models' instead of 'model'
-import java.util.List;
-import java.util.Map;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.stereotype.Controller;
 
-@RestController
+@Controller
 public class DashboardController {
+    // @Autowired
+    private final UrlMonitoringService monitoringService;
+
     @Autowired
-    private UrlMonitoringService monitoringService;
+    public DashboardController(UrlMonitoringService monitoringService) {
+        this.monitoringService = monitoringService;
+    }
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
@@ -27,9 +27,23 @@ public class DashboardController {
         // stats.put("upCount", (int) urls.stream().filter(Url::isUp).count());
         // stats.put("downCount", urls.size() - stats.get("upCount"));
 
-        String email = principal.getName(); // Get logged-in user's email
+        // String email = principal.getName(); // Get logged-in user's email
+        // model.addAttribute("user", email);
+        // model.addAttribute("urls", monitoringService.getUrlsForUser(email));
+        // return "dashboard";
+        // Get URLs and calculate stats
+        String email = principal.getName();
+        var urls = monitoringService.getUrlsForUser(email);
+        int upCount = (int) urls.stream().filter(url -> url.getStatus().isUp()).count();
+        int downCount = urls.size() - upCount;
+
+        // Add attributes for Thymeleaf template
         model.addAttribute("user", email);
-        model.addAttribute("urls", monitoringService.getUrlsForUser(email));
+        model.addAttribute("urls", urls);
+        model.addAttribute("upCount", upCount);
+        model.addAttribute("downCount", downCount);
+        model.addAttribute("totalUrls", urls.size());
+
         return "dashboard";
     }
 }

@@ -1,12 +1,11 @@
 package com.devproject.dpinUptime.service;
 
 import com.devproject.dpinUptime.model.MonitoredUrl;
+import com.devproject.dpinUptime.model.UrlStatus;
 import com.devproject.dpinUptime.repository.UrlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -28,6 +27,8 @@ public class UrlMonitoringService {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url.getUrl()).openConnection();
             connection.setConnectTimeout(TIMEOUT);
+            int responseCode = connection.getResponseCode();
+            url.setStatus((responseCode >= 200 && responseCode < 300) ? UrlStatus.UP : UrlStatus.DOWN);
             connection.setReadTimeout(TIMEOUT);
             url.setResponseTime(measureResponseTime(connection)); // Measure response time
             url.setResponseTime(measureResponseTime(connection));
@@ -35,6 +36,7 @@ public class UrlMonitoringService {
             url.setUp(connection.getResponseCode() == HttpURLConnection.HTTP_OK);
 
         } catch (SocketTimeoutException e) {
+            url.setStatus(UrlStatus.DOWN);
             url.setUp(false);
             url.setLastChecked(LocalDateTime.now());
             return url.isUp();
@@ -43,6 +45,8 @@ public class UrlMonitoringService {
             url.setLastChecked(LocalDateTime.now());
             return false;
         }
+        url.setLastChecked(LocalDateTime.now());
+        urlRepository.save(url);
         return false;
         // ResponseEntity<String> response = new RestTemplate()
         // .getForEntity(url, String.class);

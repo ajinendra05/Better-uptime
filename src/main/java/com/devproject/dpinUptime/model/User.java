@@ -17,6 +17,7 @@ public class User {
     private String email;
     private String password;
     private String role = "USER";
+    // private boolean enabled;
 
     public Long getId() {
         return id;

@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 @Entity
 public class MonitoredUrl {
@@ -18,6 +20,8 @@ public class MonitoredUrl {
     private boolean isUp;
     private LocalDateTime lastChecked;
     private long responseTime;
+    @Enumerated(EnumType.STRING)
+    private UrlStatus status;
 
     public void setResponseTime(long responseTime) {
         this.responseTime = responseTime;
@@ -73,6 +77,14 @@ public class MonitoredUrl {
 
     public void setLastChecked(LocalDateTime lastChecked) {
         this.lastChecked = lastChecked;
+    }
+
+    public UrlStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UrlStatus status) {
+        this.status = status;
     }
 
 }
