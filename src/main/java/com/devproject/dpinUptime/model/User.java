@@ -6,15 +6,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "app_user") 
+@Table(name = "app_user")
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String email;
     private String password;
     private String role = "USER";
+
     public Long getId() {
         return id;
     }
@@ -43,7 +46,7 @@ public class User {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRoles(String role) {
         this.role = role;
     }
 }

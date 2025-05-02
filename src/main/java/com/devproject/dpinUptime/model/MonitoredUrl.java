@@ -9,20 +9,32 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class MonitoredUrl {
-     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String userEmail;
     private String url;
     private boolean isUp;
     private LocalDateTime lastChecked;
+    private long responseTime;
+
+    public void setResponseTime(long responseTime) {
+        this.responseTime = responseTime;
+    }
+
+    public long getResponseTime() {
+        return responseTime;
+    }
 
     public String getUserEmail() {
         return userEmail;
     }
+
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
     public Long getId() {
         return id;
     }
@@ -62,5 +74,5 @@ public class MonitoredUrl {
     public void setLastChecked(LocalDateTime lastChecked) {
         this.lastChecked = lastChecked;
     }
-    
+
 }

@@ -47,6 +47,9 @@
                     <a th:href="@{/login}" class="text-decoration-none fw-bold">Sign in</a>
                 </div>
             </form>
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <span th:text="${error}"></span>
+            </div>
         </div>
     </div>
 

@@ -1,38 +1,44 @@
-// package com.devproject.dpinUptime.service;
-// import com.devproject.dpinUptime.DTO.UserDto;
-// import com.devproject.dpinUptime.exception.EmailExistsException;
-// import com.devproject.dpinUptime.model.User;
-// import com.devproject.dpinUptime.repository.UserRepository;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.stereotype.Service;
-// import org.springframework.transaction.annotation.Transactional;
-// import java.util.Optional;
-// import java.util.List;
+package com.devproject.dpinUptime.service;
 
-// @Service
-// public class UserServiceImpl implements UserService {
+import com.devproject.dpinUptime.DTO.UserDto;
+import com.devproject.dpinUptime.exception.EmailExistsException;
+import com.devproject.dpinUptime.model.User;
+import com.devproject.dpinUptime.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
 
-//     @Autowired
-//     private UserRepository userRepository;
+@Service
+@Transactional
+public class UserServiceImpl implements UserService {
 
-//     @Autowired
-//     private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-//     @Override
-//     public void createUser(UserDto userDto) throws EmailExistsException {
-//         if (emailExists(userDto.getEmail())) {
-//             throw new EmailExistsException("Email already exists");
-//         }
-        
-//         User user = new User();
-//         user.setEmail(userDto.getEmail());
-//         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-//         user.setRoles("ROLE_USER");
-//         userRepository.save(user);
-//     }
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-//     private boolean emailExists(String email) {
-//         return userRepository.findByEmail(email) != null;
-//     }
-// }
+    @Override
+    public void createUser(UserDto userDto) throws EmailExistsException {
+        String email = userDto.getEmail().toLowerCase();
+
+        if (emailExists(email)) {
+            throw new EmailExistsException("Email already registered: " + email);
+        }
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setRoles("ROLE_USER");
+        userRepository.save(user);
+    }
+
+    private boolean emailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+}
