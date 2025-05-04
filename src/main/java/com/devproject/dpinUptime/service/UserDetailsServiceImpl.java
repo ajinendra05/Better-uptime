@@ -2,7 +2,6 @@ package com.devproject.dpinUptime.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,11 +9,7 @@ import com.devproject.dpinUptime.model.User;
 import com.devproject.dpinUptime.repository.UserRepository;
 
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

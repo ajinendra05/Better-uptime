@@ -76,6 +76,7 @@ public class UrlMonitoringService {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
+    
 
     // Check all URLs (called by the scheduler)
     // Check all URLs (called by the scheduler)
@@ -88,7 +89,8 @@ public class UrlMonitoringService {
             url.setLastChecked(LocalDateTime.now());
             urlRepository.save(url);
 
-            if (!isUp) {
+            if (url.getStatus() == UrlStatus.UP && !isUp) {
+                url.setStatus(UrlStatus.DOWN);
                 alertService.triggerAlert(url); // Send email/Slack alert
             }
         });

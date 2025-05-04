@@ -4,13 +4,18 @@ import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.ui.Model;
 import com.devproject.dpinUptime.service.UrlMonitoringService;
 import org.springframework.stereotype.Controller;
+import java.util.Collections;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class DashboardController {
+    private static final Logger log = LoggerFactory.getLogger(DashboardController.class);
+
     // @Autowired
     private final UrlMonitoringService monitoringService;
 
@@ -33,7 +38,12 @@ public class DashboardController {
         // return "dashboard";
         // Get URLs and calculate stats
         String email = principal.getName();
+        log.info("Dashboard accessed by: {}", email);
+
         var urls = monitoringService.getUrlsForUser(email);
+        if (urls == null) {
+            urls = Collections.emptyList(); // Ensure never null
+        }
         int upCount = (int) urls.stream().filter(url -> url.getStatus().isUp()).count();
         int downCount = urls.size() - upCount;
 
