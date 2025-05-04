@@ -1,19 +1,28 @@
 package com.devproject.dpinUptime.DTO;
-
+// Ensure this class is defined
 public class SlackMessage {
-    private String text; // The message text sent to Slack
+    private String text;
+    private String channel;
 
-    // Constructor
-    public SlackMessage(String text) {
+    public SlackMessage(String text, String channel) {
         this.text = text;
+        this.channel = channel;
     }
 
-    // Getters and setters (required for JSON serialization)
+    // Getters and setters (if needed)
     public String getText() {
         return text;
     }
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 }
