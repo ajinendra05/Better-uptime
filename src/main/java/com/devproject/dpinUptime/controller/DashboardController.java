@@ -53,7 +53,6 @@ public class DashboardController {
                 int downCount = urls.size() - upCount;
 
                 // Add attributes for Thymeleaf template
-                log.info("cominggggggg: ");
 
                 model.addAttribute("user", email);
                 // model.addAttribute("urls", urls);
@@ -62,11 +61,10 @@ public class DashboardController {
                 // model.addAttribute("totalUrls", urls.size());
                 model.addAttribute("urls", urls);
                 model.addAttribute("statusStats", calculateStatusStats(urls));
-                log.info("cominggggggg: ");
 
                 model.addAttribute("filters", createFiltersWithCounts(urls));
-                model.addAttribute("currentFilter", filter != null ? filter : "all");
-
+                model.addAttribute("currentFilter", filter != null ? filter : "ALL");
+                log.info("Current filter: {}", filter);
                 return "dashboard";
         }
 
@@ -85,65 +83,72 @@ public class DashboardController {
 
         private List<StatusFilter> createFiltersWithCounts(List<MonitoredUrl> urls) {
                 log.info("Creating filters with counts for URLs: {}", urls);
-                
+
                 return Arrays.stream(UrlStatus.values())
-                    .map(filterType -> {
-                        // Handle ALL case separately
-                        long count = filterType == UrlStatus.ALL 
-                            ? urls.size()
-                            : urls.stream()
-                                .filter(url -> url.getStatus() == filterType)
-                                .count();
-            
-                        // Get filtered URLs
-                        List<MonitoredUrl> filteredUrls = filterType == UrlStatus.ALL
-                            ? urls
-                            : urls.stream()
-                                .filter(url -> url.getStatus() == filterType)
+                                .map(filterType -> {
+                                        // Handle ALL case separately
+                                        log.info("start");
+                                        long count = filterType == UrlStatus.ALL
+                                                        ? urls.size()
+                                                        : urls.stream()
+                                                                        .filter(url -> url.getStatus() == filterType)
+                                                                        .count();
+
+                                        // Get filtered URLs
+                                        List<MonitoredUrl> filteredUrls = filterType == UrlStatus.ALL
+                                                        ? urls
+                                                        : urls.stream()
+                                                                        .filter(url -> url.getStatus() == filterType)
+                                                                        .collect(Collectors.toList());
+
+                                        // Create new StatusFilter with proper constructor
+                                        log.info("FilterType: {}", filterType);
+                                        log.info("Count: {}", count);
+                                        log.info("Filtered URLs: {}", filteredUrls);
+
+                                        return new StatusFilter(
+                                                        filterType,
+                                                        filterType.getDisplayName(), // Assuming enum has
+                                                                                     // getDisplayName()
+                                                        (int) count,
+                                                        filteredUrls);
+                                })
                                 .collect(Collectors.toList());
-            
-                        // Create new StatusFilter with proper constructor
-                        return new StatusFilter(
-                            filterType,
-                            filterType.getDisplayName(), // Assuming enum has getDisplayName()
-                            (int) count,
-                            filteredUrls
-                        );
-                    })
-                    .collect(Collectors.toList());
-            }
-        // private Map<UrlStatus, StatusFilter> createFiltersWithCounts(List<MonitoredUrl> urls) {
-        //         log.info("Creating filters with counts for URLs: {}", urls);
-        //         log.info("FilterType: {}", UrlStatus.values());
-        //         return Arrays.stream(UrlStatus.values())
-        //                         .collect(Collectors.toMap(
-        //                                         filterType -> filterType,
-        //                                         filterType -> {
-        //                                                 log.info("FilterType: {}", filterType);
-        //                                                 long count = filterType == UrlStatus.ALL
-        //                                                                 ? urls.size()
-        //                                                                 : urls.stream()
-        //                                                                                 .filter(url -> url.getStatus()
-        //                                                                                                 .equals(filterType))
-        //                                                                                 .count();
-        //                                                 log.info("FilterType: {}, Count: {}", filterType, count);
-        //                                                 List<MonitoredUrl> filteredUrls = filterType == UrlStatus.ALL
-        //                                                                 ? urls
-        //                                                                 : urls.stream()
-        //                                                                                 .filter(url -> url.getStatus()
-        //                                                                                                 .equals(filterType))
-        //                                                                                 .collect(Collectors.toList());
-        //                                                 String filterTypeName = filterType.name();
-        //                                                 log.info("FilterType: {}", filterTypeName);
-        //                                                 StatusFilter sf = new StatusFilter(filterType,
-        //                                                                 FILTERS.get(filterType.name()).getLabel());
-        //                                                 sf.withUrls(filteredUrls);
-        //                                                 sf.withCount((int) count);
-        //                                                 log.info("Filter: {}, Count: {}", filterType, count);
-        //                                                 log.info("Filtered URLs: {}", filteredUrls);
-        //                                                 log.info("StatusFilter: {}", sf);
-        //                                                 return sf;
-        //                                         }));
+
+        }
+        // private Map<UrlStatus, StatusFilter>
+        // createFiltersWithCounts(List<MonitoredUrl> urls) {
+        // log.info("Creating filters with counts for URLs: {}", urls);
+        // log.info("FilterType: {}", UrlStatus.values());
+        // return Arrays.stream(UrlStatus.values())
+        // .collect(Collectors.toMap(
+        // filterType -> filterType,
+        // filterType -> {
+        // log.info("FilterType: {}", filterType);
+        // long count = filterType == UrlStatus.ALL
+        // ? urls.size()
+        // : urls.stream()
+        // .filter(url -> url.getStatus()
+        // .equals(filterType))
+        // .count();
+        // log.info("FilterType: {}, Count: {}", filterType, count);
+        // List<MonitoredUrl> filteredUrls = filterType == UrlStatus.ALL
+        // ? urls
+        // : urls.stream()
+        // .filter(url -> url.getStatus()
+        // .equals(filterType))
+        // .collect(Collectors.toList());
+        // String filterTypeName = filterType.name();
+        // log.info("FilterType: {}", filterTypeName);
+        // StatusFilter sf = new StatusFilter(filterType,
+        // FILTERS.get(filterType.name()).getLabel());
+        // sf.withUrls(filteredUrls);
+        // sf.withCount((int) count);
+        // log.info("Filter: {}, Count: {}", filterType, count);
+        // log.info("Filtered URLs: {}", filteredUrls);
+        // log.info("StatusFilter: {}", sf);
+        // return sf;
+        // }));
         // }
 
         @PostMapping("/monitors")
