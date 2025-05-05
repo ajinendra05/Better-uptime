@@ -28,6 +28,11 @@ public class UrlMonitoringService {
     private AlertService alertService;
     @Value("${monitoring.timeout}")
     private int timeout;
+    @Value("${monitoring.interval}")
+    private long checkInterval;
+
+    @Value("${monitoring.retries}")
+    private int retries;
 
     @Async
     @Scheduled(fixedRateString = "${monitoring.interval}")
@@ -44,6 +49,10 @@ public class UrlMonitoringService {
                 alertService.triggerAlert(url);
             }
         });
+    }
+
+    public void addUrl(MonitoredUrl url) {
+        urlRepository.save(url);
     }
 
     private boolean checkUrlStatus(MonitoredUrl url) {

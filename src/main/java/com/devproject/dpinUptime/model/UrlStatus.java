@@ -8,4 +8,5 @@ public enum UrlStatus {
     public boolean isUp() {
         return this == UP;
     }
+    
 }

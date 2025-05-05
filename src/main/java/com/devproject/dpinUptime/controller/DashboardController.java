@@ -1,13 +1,21 @@
 package com.devproject.dpinUptime.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
+
+import com.devproject.dpinUptime.model.MonitoredUrl;
+import com.devproject.dpinUptime.model.UrlStatus;
 import com.devproject.dpinUptime.service.UrlMonitoringService;
 import org.springframework.stereotype.Controller;
 import java.util.Collections;
+
+import javax.management.monitor.Monitor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,5 +63,28 @@ public class DashboardController {
         model.addAttribute("totalUrls", urls.size());
 
         return "dashboard";
+    }
+
+    @PostMapping("/monitors")
+    public String createMonitor(
+            @RequestParam String name,
+            @RequestParam String url,
+            Principal principal) {
+
+        // Get logged-in user's email
+        String userEmail = principal.getName();
+
+        // Create new monitored URL
+        MonitoredUrl newUrl = new MonitoredUrl();
+        newUrl.setName(name);
+        newUrl.setUrl(url);
+        newUrl.setUserEmail(userEmail);
+        newUrl.setStatus(UrlStatus.DOWN); // Initial status
+        newUrl.setLastChecked(LocalDateTime.now());
+
+        // Save through service (you might need to create this method)
+        monitoringService.addUrl(newUrl);
+
+        return "redirect:/dashboard";
     }
 }

@@ -23,6 +23,10 @@ public class MonitoredUrl {
     @Enumerated(EnumType.STRING)
     private UrlStatus status;
 
+    public MonitoredUrl() {
+        // JPA requires this
+    }
+
     public void setResponseTime(long responseTime) {
         this.responseTime = responseTime;
     }
