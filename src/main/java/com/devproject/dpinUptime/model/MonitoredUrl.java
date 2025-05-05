@@ -1,10 +1,18 @@
 package com.devproject.dpinUptime.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.devproject.dpinUptime.DTO.UptimeHistoryEntry;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
@@ -22,6 +30,18 @@ public class MonitoredUrl {
     private long responseTime;
     @Enumerated(EnumType.STRING)
     private UrlStatus status;
+
+    @ElementCollection
+    @CollectionTable(name = "uptime_history", joinColumns = @JoinColumn(name = "url_id"))
+    @Embedded
+    public List<UptimeHistoryEntry> uptimeHistory = new ArrayList<>();
+
+    public void addHistoryEntry(UptimeHistoryEntry entry) {
+        if (uptimeHistory.size() >= 30) {
+            uptimeHistory.remove(0);
+        }
+        uptimeHistory.add(entry);
+    }
 
     public MonitoredUrl() {
         // JPA requires this

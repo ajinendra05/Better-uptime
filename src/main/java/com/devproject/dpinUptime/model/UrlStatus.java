@@ -1,12 +1,23 @@
 package com.devproject.dpinUptime.model;
 
 public enum UrlStatus {
-    UP,
-    DOWN,
-    PENDING; // Optional state for checks in progress
+    ALL("All Services"),
+    UP("Online Services"),
+    SLOW("Degraded Services"),
+    DOWN("Offline Services");
+    private final String displayName;
+
+    UrlStatus(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
 
     public boolean isUp() {
         return this == UP;
     }
     
+
 }

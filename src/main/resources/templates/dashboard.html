@@ -18,13 +18,36 @@
     <link th:href="@{/css/style.css}" rel="stylesheet" />
   </head>
   <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar">
       <div class="container">
-        <a class="navbar-brand fw-bold" href="/">DPIN UPTIME</a>
         <div class="d-flex align-items-center">
-          <button id="themeToggle" class="btn btn-sm btn-outline-light me-3">
-            <i class="bi bi-moon-stars"></i>
-          </button>
+          <div
+            class="w-8 h-8 rounded-md bg-blue-500 flex items-center justify-center mr-3"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          <a class="navbar-brand fw-bold text-white" href="/">UptimeMonitor</a>
+        </div>
+        <div class="d-flex align-items-center">
+          <!-- <ul class="navbar-nav flex-row gap-3">
+            <li class="nav-item">
+              <a href="#" class="text-white">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="text-muted">Settings</a>
+            </li>
+          </ul> -->
           <div sec:authorize="isAuthenticated()" class="text-white me-3">
             Welcome, <span sec:authentication="name"></span>
           </div>
@@ -39,15 +62,26 @@
       </div>
     </nav>
 
-    <main class="container my-5 flex-grow-1">
-      <div id="loading" class="text-center py-5" th:unless="${urls}">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+    <main class="container my-5 flex-grow-1" th:if="${urls}">
+      <div class="colContainer">
+        <div
+          class="d-flex flex-column justify-content-between align-items-start mb-4"
+        >
+          <h1 class="headingText">Service Status Dashboard</h1>
+          <p class="text-gray-600">
+            Monitor the uptime and performance of your services in real-time
+          </p>
         </div>
-      </div>
-      <div id="content" th:if="${urls}">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h1 class="fw-bold">Service Status Monitor</h1>
+        <div class="d-flex justify-content-between mb-4">
+          <!-- <button
+            onClick="{handleRefresh}"
+            class="DashboardButton"
+            href="#"
+            th:classappend="${isRefreshing} ? 'opacity-50 cursor-not-allowed' : ''"
+            th:disabled="${isRefreshing}"
+          >
+            Refresh
+          </button> -->
           <button
             class="btn btn-primary"
             data-bs-toggle="modal"
@@ -56,74 +90,150 @@
             + Add Website
           </button>
         </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <!-- <h1 class="fw-bold">Service Status Monitor</h1> -->
-        <a
-          sec:authorize="hasRole('ADMIN')"
-          href="/admin"
-          class="btn btn-primary"
-        >
-          Admin Dashboard
-        </a>
       </div>
-      <!-- Status Summary Cards  -->
+      <!-- Status Summary Cards - Enhanced -->
+
       <div class="row mb-4">
-        <div class="col-md-3">
-          <div class="card bg-success text-white">
-            <div class="card-body">
-              <h5 th:text="${upCount}">0</h5>
-              <p class="mb-0">Services Up</p>
+        <!--  all status  -->
+        <!-- <div class="Summarycard">
+          <div class="card-body">
+            <p class="text-sm font-medium text-gray-500 mb-4">All Status</p>
+
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <h5 th:text="${statusStats[0].count}">0</h5>
+              <div>
+                <div class="multiple-status-indicator">
+                  <span
+                    th:classappend="bg-status-up"
+                    class="status-badge"
+                  ></span>
+                  <span
+                    th:classappend="bg-status-warning"
+                    class="status-badge"
+                  ></span>
+                  <span
+                    th:classappend="bg-status-down"
+                    class="status-badge"
+                  ></span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card bg-danger text-white">
+        </div> -->
+        <div class="col-md-3" th:each="stat : ${statusStats}">
+          <div class="Summarycard">
             <div class="card-body">
-              <h5 th:text="${downCount}">0</h5>
-              <p class="mb-0">Services Down</p>
+              <p
+                class="text-sm font-medium text-gray-500 mb-4"
+                th:text="${stat.label}"
+              >
+                Status
+              </p>
+
+              <div
+                class="d-flex justify-content-between align-items-center mt-2"
+              >
+                <h5 th:text="${stat.count}">0</h5>
+                <div th:if="${stat.status} != 'all'" class="status-indicator">
+                  <span
+                    th:classappend="${stat.status.name()} == 'UP' ? 'bg-status-up' 
+                                  : (${stat.status.name()} == 'SLOW' ? 'bg-status-warning' : 'bg-status-down')"
+                    class="status-badge"
+                  ></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Filter Section -->
+      <div class="card monitor-card mb-4">
+        <div class="card-body">
+          <div class="d-flex flex-wrap gap-2">
+            <a
+              th:each="filter : ${filters}"
+              th:href="@{/dashboard(filter=${filter.status})}"
+              class="btn btn-sm"
+              th:classappend="${currentFilter} == ${filter.status.name()} ? 'btn-primary' : 'btn-outline-secondary'"
+            >
+              <span th:text="${filter.label}">Filter</span>
+              <span
+                class="badge bg-light text-dark ms-2"
+                th:text="${filter.count}"
+                >0</span
+              >
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Website List -->
       <div class="card monitor-card">
         <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th>Service URL</th>
-                  <th>Status</th>
-                  <th>Last Checked</th>
-                  <th>Response Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr th:each="url : ${urls}">
-                  <td th:text="${url.name}"></td>
-                  <td>
+          <div th:each="filter : ${filters}">
+            <div
+              th:if="${currentFilter} == ${filter.status.name()}"
+              th:each="url : ${filter.urls}"
+              class="mb-3 border-bottom pb-3"
+            >
+              console.log(url)
+              <div
+                data-bs-toggle="collapse"
+                th:attr="data-bs-target='#details-${url.id}'"
+                class="cursor-pointer"
+              >
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
                     <span
-                      th:classappend="${url.isUp} ? 'bg-status-up' : 'bg-status-down'"
-                      class="status-badge"
+                      th:classappend="${url.status} == 'online' ? 'bg-status-up' 
+                                      : (${url.status} == 'degraded' ? 'bg-status-warning' : 'bg-status-down')"
+                      class="status-badge me-3"
+                    ></span>
+                    <span th:text="${url.name}">Website Name</span>
+                  </div>
+                  <div class="text-muted small">
+                    Last checked:
+                    <span
+                      th:text="${#temporals.format(url.lastChecked, 'dd MMM yyyy HH:mm')}"
+                    ></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Collapsible Section -->
+              <div th:id="'details-${url.id}'" class="collapse mt-3">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h6 class="fw-bold">Uptime History</h6>
+                    <div class="uptime-history">
+                      <div
+                        th:each="entry : ${url.uptimeHistory}"
+                        class="status-dot"
+                        th:classappend="${entry.status} == 'online' ? 'bg-success' 
+                                               : (${entry.status} == 'degraded' ? 'bg-warning' : 'bg-danger')"
+                        th:title="${#temporals.format(entry.timestamp, 'HH:mm:ss')} 
+                                               + ' - ' + ${entry.responseTime} + 'ms'"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div
+                      class="response-time"
+                      th:classappend="${url.responseTime} < 200 ? 'text-success' 
+                                           : (${url.responseTime} < 500 ? 'text-warning' : 'text-danger')"
                     >
-                      <span
-                        th:text="${url.isUp} ? 'OPERATIONAL' : 'OUTAGE'"
-                      ></span>
-                    </span>
-                  </td>
-                  <td
-                    th:text="${#temporals.format(url.lastChecked, 'dd MMM yyyy HH:mm')}"
-                  ></td>
-                  <td>
-                    <span th:text="${url.responseTime} + ' ms'"></span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                      Response Time:
+                      <span th:text="${url.responseTime} + 'ms'"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </main>
-
     <!-- add websit  -->
     <div class="modal fade" id="addWebsiteModal" tabindex="-1">
       <div class="modal-dialog">
@@ -137,7 +247,7 @@
             ></button>
           </div>
           <form th:action="@{/monitors}" method="post">
-            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
             <div class="modal-body">
               <div class="mb-3">
                 <label class="form-label">Website Name</label>
@@ -174,6 +284,7 @@
         </div>
       </div>
     </div>
+
     <footer class="bg-dark text-white py-3 mt-5">
       <div class="container text-center">
         <span class="text-muted"
@@ -201,68 +312,11 @@
             ? '<i class="bi bi-sun"></i>'
             : '<i class="bi bi-moon-stars"></i>';
       });
-      document.getElementById('addWebsiteModal').addEventListener('hidden.bs.modal', function () {
-    this.querySelector('form').reset();
-  });
+      document
+        .getElementById("addWebsiteModal")
+        .addEventListener("hidden.bs.modal", function () {
+          this.querySelector("form").reset();
+        });
     </script>
   </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <title>DPIN Uptime</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="/">DPIN Uptime</a>
-            <div class="navbar-nav ms-auto">
-                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
-                    <span class="text-light me-3">Welcome, <span sec:authentication="name"></span>!</span>
-                    <form th:action="@{/logout}" method="post">
-                        <button type="submit" class="btn btn-outline-light">Logout</button>
-                    </form>
-                </div>
-                <div sec:authorize="hasRole('ADMIN')" class="ms-3">
-                    <a href="/admin" class="btn btn-primary">Admin Panel</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container">
-        <h1 class="mb-4">Uptime Monitor</h1>
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>URL</th>
-                            <th>Status</th>
-                            <th>Last Checked</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="url : ${urls}">
-                            <td th:text="${url.name}">Example</td>
-                            <td>
-                                <span th:classappend="${url.isUp} ? 'bg-success' : 'bg-danger'" 
-                                      class="badge"
-                                      th:text="${url.isUp} ? 'UP' : 'DOWN'">UNKNOWN</span>
-                            </td>
-                            <td th:text="${#temporals.format(url.lastChecked, 'yyyy-MM-dd HH:mm')}">
-                                2025-01-01
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html> -->

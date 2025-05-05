@@ -19,9 +19,9 @@ body {
     min-height: 100vh;
 } */
 :root {
-  --bg-color: #ffffff;
+  --bg-color: #e5e7eb;
   --text-color: #212529;
-  --card-bg: #f8f9fa;
+  --card-bg: #f2faff;
 }
 
 [data-theme="dark"] {
@@ -44,11 +44,11 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.status-badge {
+/* .status-badge {
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 500;
-}
+} */
 
 .bg-status-up {
   background-color: #d4edda;
@@ -62,7 +62,7 @@ body {
 
 .monitor-card {
   border: none;
-  border-radius: 15px;
+  border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s;
 }
@@ -73,7 +73,7 @@ body {
 
 .auth-container {
   max-width: 450px;
-  border-radius: 15px;
+  border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -92,4 +92,126 @@ body {
 .modal-content {
   background: var(--bg-color);
   color: var(--text-color);
+}
+
+/* new */
+/* Status Colors */
+.Summarycard {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.bg-status-up {
+  background-color: #28a745;
+}
+.bg-status-warning {
+  background-color: #ffc107;
+}
+.bg-status-down {
+  background-color: #dc3545;
+}
+
+/* Uptime History */
+.uptime-history {
+  display: grid;
+  grid-template-columns: repeat(30, 1fr);
+  gap: 2px;
+  height: 25px;
+}
+
+.status-dot {
+  height: 100%;
+  border-radius: 2px;
+}
+.status-badge {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0 4px;
+}
+.multiple-status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: -4px;
+  
+}
+/* Interactive Elements */
+.cursor-pointer {
+  cursor: pointer;
+}
+.response-time {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.text-gray-600 {
+  color: #414040;
+  font-size: 0.875rem;
+  font-weight: 300;
+}
+
+.headingText {
+  font-family: "Audiowide", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.colContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+/* mt-4 md:mt-0 flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 ease-in-out transform hover:scale-105 */
+.DashboardButton {
+  height: 1rem;
+  padding: 40px 20px;
+  width: 6rem;
+  background-color: rgb(49, 126, 250);
+  color: rgba(249, 247, 247, 0.97);
+  border-radius: 5px;
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  transition: transform 0.2s ease;
+  border-color: none;
+  border: none;
+}
+.DashboardButton:hover {
+  transform: translateY(-5px);
+}
+/* .DashboardButton {
+  background-color: #3f37c9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+} */
+
+/* navbar-expand-lg navbar-dark bg-primary */
+.navbar {
+  background-color: rgb(59 130 246);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+.navbar-dark {
+  background-color: #3f37c9;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
