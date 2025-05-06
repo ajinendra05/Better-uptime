@@ -4,13 +4,7 @@ import com.devproject.dpinUptime.repository.WebsiteTickRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.annotation.Async;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 
 @Service

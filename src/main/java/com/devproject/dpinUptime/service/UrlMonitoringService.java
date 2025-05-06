@@ -35,7 +35,7 @@ public class UrlMonitoringService {
     private int retries;
 
     @Async
-    @Scheduled(fixedRateString = "60000")
+    @Scheduled(fixedRateString = "1800000")
     public void monitorAllUrls() {
         log.info("Starting URL monitoring...");
         List<MonitoredUrl> urls = urlRepository.findAll();

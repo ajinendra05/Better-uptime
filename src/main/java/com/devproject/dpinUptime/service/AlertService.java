@@ -1,16 +1,12 @@
 package com.devproject.dpinUptime.service;
 
-import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.MailException;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.stereotype.Service;
 import com.devproject.dpinUptime.model.MonitoredUrl;
-import com.devproject.dpinUptime.DTO.SlackMessage; // Ensure this class is defined
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -18,31 +18,34 @@ import java.util.stream.Collectors;
 
 @Service
 public class UptimeCheckerService {
-    @Autowired private UrlRepository urlRepository;
-    @Autowired private AlertService alertService;
-    @Autowired private RestTemplate restTemplate;
-    
+    @Autowired
+    private UrlRepository urlRepository;
+    @Autowired
+    private AlertService alertService;
+    @Autowired
+    private RestTemplate restTemplate;
+
     private static final Logger log = LoggerFactory.getLogger(UptimeCheckerService.class);
 
-    @Scheduled(fixedRateString = "${uptime.check.interval}")
+    @Scheduled(fixedRateString = "180000") // Every 3 minutes
     public void checkAllUrls() {
         log.info("Starting uptime checks...");
         List<MonitoredUrl> updatedUrls = urlRepository.findAll().stream()
-            .map(url -> {
-                boolean isUp = checkUrl(url.getUrl());
-                UrlStatus newStatus = isUp ? UrlStatus.UP : UrlStatus.DOWN;
-                
-                // Alert only on state change (UP → DOWN)
-                if (url.getStatus() == UrlStatus.UP && newStatus == UrlStatus.DOWN) {
-                    alertService.triggerAlert(url);
-                }
-                
-                url.setStatus(newStatus);
-                url.setLastChecked(LocalDateTime.now());
-                return url;
-            })
-            .collect(Collectors.toList());
-        
+                .map(url -> {
+                    boolean isUp = checkUrl(url.getUrl());
+                    UrlStatus newStatus = isUp ? UrlStatus.UP : UrlStatus.DOWN;
+
+                    // Alert only on state change (UP → DOWN)
+                    if (url.getStatus() == UrlStatus.UP && newStatus == UrlStatus.DOWN) {
+                        alertService.triggerAlert(url);
+                    }
+
+                    url.setStatus(newStatus);
+                    url.setLastChecked(LocalDateTime.now());
+                    return url;
+                })
+                .collect(Collectors.toList());
+
         urlRepository.saveAll(updatedUrls);
         log.info("Completed checks for {} URLs", updatedUrls.size());
     }
@@ -58,29 +61,30 @@ public class UptimeCheckerService {
     }
 }
 // @Service
-// public class UptimeCheckerService  {
-//     @Autowired
-//     private UrlRepository urlRepository;
-//     @Autowired
-//     private AlertService alertService;
+// public class UptimeCheckerService {
+// @Autowired
+// private UrlRepository urlRepository;
+// @Autowired
+// private AlertService alertService;
 
-//     @Scheduled(fixedRate = 60000) // Every 60 seconds
-//     public void checkAllUrls() {
-//         urlRepository.findAll().forEach(url -> {
-//             boolean isUp = checkUrl(url.getUrl()); // HTTP call
-//             url.setUp(isUp);
-//             url.setLastChecked(LocalDateTime.now());
-//             urlRepository.save(url);
-//             if (!isUp) alertService.triggerAlert(url);
-//         });
-//     }
+// @Scheduled(fixedRate = 60000) // Every 60 seconds
+// public void checkAllUrls() {
+// urlRepository.findAll().forEach(url -> {
+// boolean isUp = checkUrl(url.getUrl()); // HTTP call
+// url.setUp(isUp);
+// url.setLastChecked(LocalDateTime.now());
+// urlRepository.save(url);
+// if (!isUp) alertService.triggerAlert(url);
+// });
+// }
 
-//     private boolean checkUrl(String url) {
-//         try {
-//             ResponseEntity<String> response = new RestTemplate().getForEntity(url, String.class);
-//             return response.getStatusCode().is2xxSuccessful();
-//         } catch (Exception e) {
-//             return false;
-//         }
-//     }
+// private boolean checkUrl(String url) {
+// try {
+// ResponseEntity<String> response = new RestTemplate().getForEntity(url,
+// String.class);
+// return response.getStatusCode().is2xxSuccessful();
+// } catch (Exception e) {
+// return false;
+// }
+// }
 // }

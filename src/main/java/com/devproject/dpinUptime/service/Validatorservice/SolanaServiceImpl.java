@@ -1,4 +1,4 @@
-package com.devproject.dpinUptime.service;
+package com.devproject.dpinUptime.service.Validatorservice;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.springframework.stereotype.Service;
@@ -6,8 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Service
-public class SolanaService {
-
+public class SolanaServiceImpl implements SolanaService {
+    @Override
     public boolean verifySignature(String message, String publicKey, String signature) {
         final var verifier = new Ed25519Signer();
         verifier.init(false, new Ed25519PublicKeyParameters(
