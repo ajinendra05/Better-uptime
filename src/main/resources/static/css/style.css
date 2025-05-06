@@ -214,12 +214,24 @@ body {
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
-
+.web-monitor-card {
+  background-color: transparent;
+}
 .webcard-body {
-  margin: 30px 0px;
+  /* margin: 30px 0px;
+  padding: 10px 20px; */
+  /* background-color: #f2faff; */
+  background-color: transparent;
+}
+.outer-webItem-card {
+  margin: 3px 0px;
   padding: 10px 20px;
   background-color: #f2faff;
 }
 .webItem-card {
   background-color: transparent;
+}
+.collapse-card {
+  background-color: #f2faff81;
+  padding: 10px 20px;
 }
