@@ -169,22 +169,25 @@
       </div>
 
       <!-- Website List -->
-      <div class="card monitor-card">
-        <div class="card-body">
+      <div class="card monitor-card ">
+        <div class="webcard-body">
           <div th:each="filter : ${filters}">
             <div
               th:if="${currentFilter} == ${filter.status.name()}"
               th:each="url : ${filter.urls}"
               class="mb-3 border-bottom pb-3"
             >
-              console.log(url)
+              <!-- Website Item -->
               <div
                 data-bs-toggle="collapse"
-                th:attr="data-bs-target='#details-${url.id}'"
+                th:attr="data-bs-target='#details-' + ${url.id}"
+                aria-expanded="false" 
+      aria-controls="details-${url.id}"
                 class="cursor-pointer"
               >
+              <div class="webItem-card">
                 <div class="d-flex justify-content-between align-items-center">
-                  <div>
+                  <div class="webItem-card">
                     <span
                       th:classappend="${url.status} == 'online' ? 'bg-status-up' 
                                       : (${url.status} == 'degraded' ? 'bg-status-warning' : 'bg-status-down')"
@@ -192,20 +195,37 @@
                     ></span>
                     <span th:text="${url.name}">Website Name</span>
                   </div>
-                  <div class="text-muted small">
-                    Last checked:
-                    <span
-                      th:text="${#temporals.format(url.lastChecked, 'dd MMM yyyy HH:mm')}"
-                    ></span>
+                  <div class="flex items-center space-x-6 flex-col">
+                    <!-- <Clock size={16} class="mr-1 bg-blue-500" />   -->
+                    <!-- <div>&#128339;</div> -->
+                    <div class="text-muted small">
+                      Updated:
+                      <span
+                        th:text="${#temporals.format(url.lastChecked, 'hh:mm::ss a')}"
+                      ></span>
+                      <div
+                        class="hidden sm:block text-sm font-medium"
+                        th:classappend="${responseTimeClass}"
+                      >
+                        <span
+                          th:text="${url.responseTime > 0} ? ${url.responseTime + 'ms'} : 'No response'"
+                          >Loading...</span
+                        >
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+                
+              </div>
 
               <!-- Collapsible Section -->
-              <div th:id="'details-${url.id}'" class="collapse mt-3">
+              <div th:attr="id='details-' + ${url.id}" class="collapse mt-3"   aria-labelledby="heading-${url.id}">
                 <div class="row">
                   <div class="col-md-6">
-                    <h6 class="fw-bold">Uptime History</h6>
+                    <h6 class="text-sm font-medium text-gray-700 mb-2">
+                      Uptime Last 30 Minute
+                    </h6>
                     <div class="uptime-history">
                       <div
                         th:each="entry : ${url.uptimeHistory}"
@@ -218,16 +238,33 @@
                     </div>
                   </div>
                   <div class="col-md-6">
-                    <div
-                      class="response-time"
-                      th:classappend="${url.responseTime} < 200 ? 'text-success' 
-                                           : (${url.responseTime} < 500 ? 'text-warning' : 'text-danger')"
-                    >
-                      Response Time:
-                      <span th:text="${url.responseTime} + 'ms'"></span>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-4 align-items-center"> <!-- Changed to Bootstrap spacing -->
+                            <!-- Status Indicators -->
+                            <div class="d-flex align-items-center">
+                                <div class="me-1 bg-success rounded-circle" style="width: 8px; height: 8px"></div>
+                                <span class="small">Online</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="me-1 bg-warning rounded-circle" style="width: 8px; height: 8px"></div>
+                                <span class="small">Degraded</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="me-1 bg-danger rounded-circle" style="width: 8px; height: 8px"></div>
+                                <span class="small">Offline</span>
+                            </div>
+                            
+                            <!-- Response Time -->
+                            <div class="d-flex align-items-center small" 
+                                 th:classappend="${url.responseTime} < 200 ? 'text-success' 
+                                                : (${url.responseTime} < 500 ? 'text-warning' : 'text-danger')">
+                                <span class="me-1">Response Time:</span>
+                                <span th:text="${url.responseTime} + 'ms'"></span>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
+                  
               </div>
             </div>
           </div>

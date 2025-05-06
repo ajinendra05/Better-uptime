@@ -51,7 +51,10 @@ public class DashboardController {
                 }
                 int upCount = (int) urls.stream().filter(url -> url.getStatus().isUp()).count();
                 int downCount = urls.size() - upCount;
-
+                for (MonitoredUrl url : urls) {
+                        log.info("URL: {}, Status: {}", url.getUrl(), url.getStatus());
+                        log.info("Url id: {}", url.getId());
+                }
                 // Add attributes for Thymeleaf template
 
                 model.addAttribute("user", email);
@@ -64,7 +67,6 @@ public class DashboardController {
 
                 model.addAttribute("filters", createFiltersWithCounts(urls));
                 model.addAttribute("currentFilter", filter != null ? filter : "ALL");
-                log.info("Current filter: {}", filter);
                 return "dashboard";
         }
 
@@ -83,11 +85,15 @@ public class DashboardController {
 
         private List<StatusFilter> createFiltersWithCounts(List<MonitoredUrl> urls) {
                 log.info("Creating filters with counts for URLs: {}", urls);
+                for (MonitoredUrl url : urls) {
+                        // log.info("URL: {}, Status: {}", url.getUrl(), url.getStatus());
+                        log.info("checking id");
 
+                        log.info("Url id: {}", url.getId());
+                }
                 return Arrays.stream(UrlStatus.values())
                                 .map(filterType -> {
                                         // Handle ALL case separately
-                                        log.info("start");
                                         long count = filterType == UrlStatus.ALL
                                                         ? urls.size()
                                                         : urls.stream()
@@ -102,9 +108,6 @@ public class DashboardController {
                                                                         .collect(Collectors.toList());
 
                                         // Create new StatusFilter with proper constructor
-                                        log.info("FilterType: {}", filterType);
-                                        log.info("Count: {}", count);
-                                        log.info("Filtered URLs: {}", filteredUrls);
 
                                         return new StatusFilter(
                                                         filterType,
