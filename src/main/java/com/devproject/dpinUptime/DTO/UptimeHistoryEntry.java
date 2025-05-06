@@ -10,6 +10,12 @@ public class UptimeHistoryEntry {
     private final String status;
     private final long responseTime;
 
+    public UptimeHistoryEntry() {
+        this.timestamp = LocalDateTime.now();
+        this.status = "UNKNOWN";
+        this.responseTime = 0;
+    }
+
     public UptimeHistoryEntry(LocalDateTime timestamp, String status, long responseTime) {
         this.timestamp = timestamp;
         this.status = status;
@@ -32,8 +38,10 @@ public class UptimeHistoryEntry {
     // equals() and hashCode()
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         UptimeHistoryEntry that = (UptimeHistoryEntry) o;
         return responseTime == that.responseTime &&
                 Objects.equals(timestamp, that.timestamp) &&

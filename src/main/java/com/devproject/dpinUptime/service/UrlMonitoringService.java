@@ -35,7 +35,7 @@ public class UrlMonitoringService {
     private int retries;
 
     @Async
-    @Scheduled(fixedRateString = "${monitoring.interval}")
+    @Scheduled(fixedRateString = "60000")
     public void monitorAllUrls() {
         log.info("Starting URL monitoring...");
         List<MonitoredUrl> urls = urlRepository.findAll();
@@ -82,6 +82,11 @@ public class UrlMonitoringService {
     public List<MonitoredUrl> getUrlsForUser(String userEmail) {
         return urlRepository.findByUserEmail(userEmail); // Fixed method name
     }
+
+    public List<MonitoredUrl> getActiveUrl() {
+        return urlRepository.findAll(); // Added method to get all URLs
+    }
+
 }
 // @Service
 // public class UrlMonitoringService {

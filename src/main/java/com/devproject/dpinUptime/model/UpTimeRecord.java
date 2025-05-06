@@ -6,7 +6,7 @@ public class UpTimeRecord {
     private LocalDateTime timestamp;
     private String status;
     private int responseTime;
-    
+    public UpTimeRecord() {}
     // Getters and setters
     public LocalDateTime getTimestamp() {
         return timestamp;
