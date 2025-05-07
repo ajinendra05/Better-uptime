@@ -27,7 +27,7 @@ public class SecurityConfig {
                 http
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/", "/register", "/login", "/login/validator",
-                                                                "/static/**", "/css/**",
+                                                                "/static/**", "/css/**","/ws/**",
                                                                 "/js/**")
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/monitors").authenticated()

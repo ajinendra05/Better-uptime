@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,6 @@ import org.slf4j.LoggerFactory;
 @Controller
 public class HubController {
 
-    private static final Logger logger = LoggerFactory.getLogger(HubController.class);
     private static final Logger log = LoggerFactory.getLogger(DashboardController.class);
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -64,6 +64,16 @@ public class HubController {
         log.info("Session ID: " + headers.getSessionId());
         log.info(null != request.getIp() ? "IP: " + request.getIp() : "IP: null");
         log.info("Message: " + request.getMessage());
+        try {
+            long timestamp = Long.parseLong(request.getMessage().split("- ")[1]);
+            if (System.currentTimeMillis() - timestamp > 120_000) { // 2-minute window
+                sendError(headers.getSessionId(), "Expired signature");
+                return;
+            }
+        } catch (Exception e) {
+            sendError(headers.getSessionId(), "Invalid authentication message");
+            return;
+        }
         try {
             // Verify signature format first
             if (!isValidSolanaSignature(request.getSignature())) {
@@ -213,4 +223,6 @@ public class HubController {
         String sessionId = event.getSessionId();
         connectedValidators.remove(sessionId);
     }
+
+    
 }
