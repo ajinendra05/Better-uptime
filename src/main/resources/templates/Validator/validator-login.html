@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Validator Login</title>
+    <link th:href="@{/css/validator.css}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div th:if="${error}" class="alert alert-danger">
+            Invalid Solana signature verification
+        </div>
+        
+        <h1>Validator Authentication</h1>
+        
+        <!-- Solana Wallet Connection -->
+        <button id="connectWallet" class="btn btn-primary">
+            Connect Solana Wallet
+        </button>
+
+        <form th:action="@{/validator/login}" method="post" id="validatorAuthForm" style="display:none;">
+            <input type="hidden" name="publicKey" id="publicKey">
+            <input type="hidden" name="signedMessage" id="signedMessage">
+            <input type="hidden" name="callbackId" th:value="${callbackId}">
+            
+            <button type="submit" class="btn btn-success">
+                Authenticate as Validator
+            </button>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <script>
+        document.getElementById('connectWallet').addEventListener('click', async () => {
+            const provider = window.solana;
+            if (!provider) {
+                alert('Please install Phantom Wallet!');
+                return;
+            }
+            
+            try {
+                await provider.connect();
+                const publicKey = provider.publicKey.toString();
+                const message = `Validator authentication: ${Date.now()}`;
+                const signedMessage = await provider.signMessage(
+                    new TextEncoder().encode(message)
+                );
+                
+                document.getElementById('publicKey').value = publicKey;
+                document.getElementById('signedMessage').value = JSON.stringify(signedMessage.signature);
+                document.getElementById('validatorAuthForm').style.display = 'block';
+            } catch (error) {
+                console.error('Wallet connection failed:', error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Validator Dashboard</title>
+    <link th:href="@{/css/validator.css}" rel="stylesheet">
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <div class="container mt-4">
+        <h2>URLs to Validate</h2>
+        
+        <div th:if="${#lists.isEmpty(urls)}" class="alert alert-info">
+            No URLs need validation at this time
+        </div>
+        
+        <table class="table" th:unless="${#lists.isEmpty(urls)}">
+            <thead>
+                <tr>
+                    <th>URL</th>
+                    <th>Last Checked</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="url : ${urls}">
+                    <td th:text="${url.url}"></td>
+                    <td th:text="${#temporals.format(url.lastChecked, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${url.status}"></td>
+                    <td>
+                        <a th:href="@{/validator/validate/{callbackId}(callbackId=${url.callbackId})}" 
+                           class="btn btn-primary">
+                            Validate
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

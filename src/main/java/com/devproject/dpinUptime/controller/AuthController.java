@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.devproject.dpinUptime.model.User;
 import com.devproject.dpinUptime.repository.UserRepository;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller

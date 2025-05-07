@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Validate URL</title>
+    <link th:href="@{/css/validator.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <div class="container mt-4">
+        <h2>Validate URL: <span th:text="${url}"></span></h2>
+        
+        <form th:action="@{/validator/submit-validation}" method="post">
+            <input type="hidden" name="callbackId" th:value="${callbackId}">
+            <input type="hidden" name="websiteId" th:value="${websiteId}">
+            
+            <div class="form-group">
+                <label>Status:</label>
+                <select name="status" class="form-control">
+                    <option value="Good">Good</option>
+                    <option value="Bad">Bad</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Latency (ms):</label>
+                <input type="number" name="latency" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn btn-success">
+                Submit Validation
+            </button>
+        </form>
+    </div>
+</body>
+</html>

@@ -48,7 +48,7 @@ public class HubController {
         this.solanaService = solanaService;
     }
 
-    @MessageMapping("/validator/signup")
+    @MessageMapping("/validator/login")
     public void handleSignup(SignupRequest request, StompHeaderAccessor headers) {
         if (solanaService.verifySignature(
                 request.getMessage(),
