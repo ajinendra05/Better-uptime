@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Validator Login | Uptime Monitor</title>
+    <link th:href="@{/css/validator.css}" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="gradient-background"></div>
+
+      <div class="auth-card">
+        <div class="logo-container">
+          <img
+            th:src="@{/images/logo.svg}"
+            alt="Uptime Monitor Logo"
+            class="logo"
+          />
+        </div>
+
+        <div th:if="${error}" class="alert alert-error">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>Authentication Failed: Invalid Solana signature</span>
+        </div>
+
+        <div class="auth-header">
+          <h1>Validator Portal</h1>
+          <p>Connect your wallet to verify website status</p>
+        </div>
+
+        <div class="wallet-connect-section">
+          <button id="connectWallet" class="wallet-btn">
+            <i class="fas fa-wallet"></i>
+            <span>Connect Solana Wallet</span>
+          </button>
+
+          <form
+            th:action="@{/validator/login}"
+            method="post"
+            id="validatorAuthForm"
+            class="auth-form"
+          >
+            <input type="hidden" name="publicKey" id="publicKey" />
+            <input type="hidden" name="signedMessage" id="signedMessage" />
+            <input type="hidden" name="callbackId" th:value="${callbackId}" />
+
+            <button type="submit" class="auth-btn">
+              <i class="fas fa-fingerprint"></i>
+              <span>Authenticate as Validator</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="auth-footer">
+          <p>Need help? <a href="#">Contact Support</a></p>
+          <div class="powered-by">
+            <span>Powered by Solana</span>
+            <i class="fas fa-bolt"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <script>
+      // Updated connectWallet event handler
+      document
+        .getElementById("connectWallet")
+        .addEventListener("click", async () => {
+          try {
+            const provider = window.solana;
+            if (!provider || !provider.isPhantom) {
+              showError("Phantom Wallet not detected!");
+              return;
+            }
+
+            // Connect to wallet
+            const connection = await provider.connect();
+
+            // Get required values
+            const publicKey = provider.publicKey.toString();
+            const message = `Validator Authentication - ${Date.now()}`;
+
+            // Sign message
+            const encodedMessage = new TextEncoder().encode(message);
+            const signedMessage = await provider.signMessage(encodedMessage);
+
+            // Update form fields
+            document.getElementById("publicKey").value = publicKey;
+            document.getElementById("signedMessage").value = JSON.stringify(
+              Array.from(signedMessage.signature)
+            );
+
+            // Show authentication button
+            document.getElementById("validatorAuthForm").style.display =
+              "block";
+            document.getElementById("connectWallet").disabled = true;
+          } catch (error) {
+            console.error("Wallet error:", error);
+            showError(error.message);
+          }
+        });
+      function showError(message) {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "alert alert-error";
+        errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+            `;
+        document.querySelector(".wallet-connect-section").prepend(errorDiv);
+      }
+      // Add form submission handler
+      // document
+      //   .getElementById("validatorAuthForm")
+      //   .addEventListener("submit", async (e) => {
+      //     console.log("Form submitted");
+      //     console.log(e);
+      //     e.preventDefault();
+
+      //     const formData = new FormData(e.target);
+      //     const response = await fetch("/validator/login", {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/x-www-form-urlencoded",
+      //       },
+      //       body: new URLSearchParams(formData),
+      //     });
+
+      //     if (response.ok) {
+      //       window.location.href = "/validator/dashboard";
+      //     } else {
+      //       const error = await response.text();
+      //       showError(error);
+      //     }
+      //   });
+    </script>
+  </body>
+</html>

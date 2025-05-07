@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <!-- th:replace="fragments/landing-header :: head" -->
+  <head th:replace="~{fragments/landing-header :: head}"> </head>
+  <body>
+    <div class="page-wrapper">
+      <header th:replace="fragments/header :: header"></header>
+
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Never Miss a Moment of Downtime</h1>
+            <p>
+              Real-time monitoring and instant alerts when your website
+              experiences issues. Trusted by thousands of businesses worldwide.
+            </p>
+            <div class="hero-cta">
+              <a href="/login" class="btn btn-primary">Monitor Your Website</a>
+              <a href="/login/validator" class="btn btn-secondary"
+                >Join as Validator</a
+              >
+            </div>
+          </div>
+          <div class="hero-image">
+            <img
+              src="https://images.pexels.com/photos/7988079/pexels-photo-7988079.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              alt="Website monitoring dashboard"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="stats">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-number">99.9%</div>
+              <div class="stat-label">Uptime Guarantee</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">30s</div>
+              <div class="stat-label">Alert Response Time</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">10k+</div>
+              <div class="stat-label">Websites Monitored</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">24/7</div>
+              <div class="stat-label">Global Coverage</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features" id="features">
+        <div class="container">
+          <h2 class="section-title">Powerful Monitoring Features</h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="48"
+                  height="48"
+                  stroke="currentColor"
+                  fill="none"
+                >
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+              </div>
+              <h3>Real-Time Monitoring</h3>
+              <p>
+                Continuous checks every 30 seconds from multiple global
+                locations.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="48"
+                  height="48"
+                  stroke="currentColor"
+                  fill="none"
+                >
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+              </div>
+              <h3>Instant Alerts</h3>
+              <p>Get notified immediately via SMS, email, Slack, or Discord.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="48"
+                  height="48"
+                  stroke="currentColor"
+                  fill="none"
+                >
+                  <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                  <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                </svg>
+              </div>
+              <h3>Detailed Analytics</h3>
+              <p>
+                Comprehensive reports with historical data and performance
+                insights.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="48"
+                  height="48"
+                  stroke="currentColor"
+                  fill="none"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              </div>
+              <h3>Response Time Tracking</h3>
+              <p>
+                Monitor and analyze your website's loading speed and
+                performance.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works Section -->
+      <section class="how-it-works" id="how-it-works">
+        <div class="container">
+          <h2 class="section-title">How It Works</h2>
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <h3>Sign Up</h3>
+              <p>Create an account and add your websites for monitoring.</p>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <h3>Configure Alerts</h3>
+              <p>Set up notification preferences and alert thresholds.</p>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <h3>Get Monitored</h3>
+              <p>
+                Our system checks your websites every 30 seconds from multiple
+                locations.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-number">4</div>
+              <h3>Stay Informed</h3>
+              <p>
+                Receive instant alerts when issues are detected and view
+                detailed reports.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- User Types Section -->
+      <section class="user-types" id="user-types">
+        <div class="container">
+          <h2 class="section-title">Who Is UptimeMonitor For?</h2>
+          <div class="user-types-grid">
+            <div class="user-type-card">
+              <h3>Website Owners</h3>
+              <p>
+                Monitor your websites 24/7 and receive instant notifications
+                when they go down.
+              </p>
+              <ul>
+                <li>Small business websites</li>
+                <li>E-commerce stores</li>
+                <li>Personal blogs</li>
+                <li>Corporate websites</li>
+              </ul>
+              <a href="/login/user" class="btn btn-primary">Get Started</a>
+            </div>
+            <div class="user-type-card">
+              <h3>Validators</h3>
+              <p>
+                Join our network of validators to help verify website status and
+                earn rewards.
+              </p>
+              <ul>
+                <li>IT professionals</li>
+                <li>Network engineers</li>
+                <li>DevOps specialists</li>
+                <li>System administrators</li>
+              </ul>
+              <a href="/login/validator" class="btn btn-secondary"
+                >Join as Validator</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials Section -->
+      <section class="testimonials">
+        <div class="container">
+          <h2 class="section-title">What Our Users Say</h2>
+          <div class="testimonials-slider">
+            <div class="testimonial">
+              <div class="testimonial-content">
+                <p>
+                  "UptimeMonitor has been a game-changer for our e-commerce
+                  business. We've reduced downtime by 95% and saved thousands in
+                  potential lost sales."
+                </p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-name">Sarah Johnson</div>
+                <div class="author-role">E-commerce Manager</div>
+              </div>
+            </div>
+            <div class="testimonial">
+              <div class="testimonial-content">
+                <p>
+                  "As a validator, I've been able to earn extra income while
+                  leveraging my technical skills. The platform is intuitive and
+                  the community is supportive."
+                </p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-name">Michael Chen</div>
+                <div class="author-role">Systems Engineer</div>
+              </div>
+            </div>
+            <div class="testimonial">
+              <div class="testimonial-content">
+                <p>
+                  "The instant alerts have saved our business multiple times. We
+                  can address issues before they impact our customers."
+                </p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-name">David Smith</div>
+                <div class="author-role">Tech Startup Founder</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section class="contact" id="contact">
+        <div class="container">
+          <h2 class="section-title">Get in Touch</h2>
+          <div class="contact-content">
+            <div class="contact-info">
+              <h3>Contact Information</h3>
+              <p><strong>Email:</strong> hello@uptimemonitor.com</p>
+              <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+              <p>
+                <strong>Address:</strong> 123 Monitoring Street, San Francisco,
+                CA 94103
+              </p>
+            </div>
+            <div class="contact-image">
+              <img
+                src="https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                alt="Contact our team"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final CTA Section -->
+      <section class="cta">
+        <div class="container">
+          <h2>Ready to ensure your website is always available?</h2>
+          <p>
+            Join thousands of website owners who trust UptimeMonitor for their
+            uptime monitoring needs.
+          </p>
+          <div class="cta-buttons">
+            <a href="/login/user" class="btn btn-primary">Start Monitoring</a>
+            <a href="/login/validator" class="btn btn-secondary"
+              >Become a Validator</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <footer th:replace="fragments/footer :: footer"></footer>
+    </div>
+  </body>
+</html>
+
+<!-- <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<link th:href="@{/css/landingStyle.css}" rel="stylesheet" /> -->

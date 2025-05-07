@@ -26,12 +26,13 @@ public class SecurityConfig {
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/", "/register", "/login", "/validator/login",
+                                                .requestMatchers("/", "/register", "/login", "/login/validator",
                                                                 "/static/**", "/css/**",
                                                                 "/js/**")
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/monitors").authenticated()
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                                                .requestMatchers("/validator/**").hasRole("VALIDATOR")
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
@@ -42,6 +43,13 @@ public class SecurityConfig {
                                 .logout(logout -> logout
                                                 .logoutUrl("/logout")
                                                 .logoutSuccessUrl("/login?logout")
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID"))
+                                .formLogin(form -> form
+                                                .loginPage("/validator/login"))
+                                .logout(logout -> logout
+                                                .logoutUrl("/validator/logout")
+                                                .logoutSuccessUrl("/validator/login?logout")
                                                 .invalidateHttpSession(true)
                                                 .deleteCookies("JSESSIONID"))
                                 .rememberMe(remember -> remember

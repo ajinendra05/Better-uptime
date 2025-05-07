@@ -1,4 +1,5 @@
 package com.devproject.dpinUptime.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.devproject.dpinUptime.model.User;
 import com.devproject.dpinUptime.repository.UserRepository;
-
 
 @Controller
 public class AuthController {
@@ -33,5 +33,10 @@ public class AuthController {
     @GetMapping("/login")
     public String loginForm() {
         return "login";
+    }
+
+    @GetMapping("/login/validator")
+    public String validatorLogin() {
+        return "validator-login";
     }
 }
