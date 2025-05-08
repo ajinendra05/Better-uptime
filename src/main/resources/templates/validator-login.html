@@ -53,6 +53,7 @@
             <input type="hidden" name="publicKey" id="publicKey" />
             <input type="hidden" name="signedMessage" id="signedMessage" />
             <input type="hidden" name="callbackId" th:value="${callbackId}" />
+            <input type="hidden" name="message" id="message" />
 
             <button id="validatorAuthBtn" class="auth-btn">
               <i class="fas fa-fingerprint"></i>
@@ -73,7 +74,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bs58@4.0.1"></script> -->
     <script>
+      // import bs58 from "bs58";
+      // const bs58 = window.bs58;
       let stompClient = null;
       const WS_ENDPOINT = "/ws";
       document
@@ -99,9 +103,16 @@
 
             // Update form fields
             document.getElementById("publicKey").value = publicKey;
-            document.getElementById("signedMessage").value = JSON.stringify(
-              Array.from(signedMessage.signature)
+            document.getElementById("message").value = message;
+            // document.getElementById("signedMessage").value = JSON.stringify(
+            //   Array.from(signedMessage.signature)
+            // );
+            const signatureBytes = new Uint8Array(signedMessage.signature);
+            const base64Signature = btoa(
+              String.fromCharCode(...signatureBytes)
             );
+
+            document.getElementById("signedMessage").value = base64Signature;
 
             // Show authentication button
             document.getElementById("validatorAuthForm").style.display =
@@ -126,11 +137,21 @@
         .getElementById("validatorAuthBtn")
         .addEventListener("click", async () => {
           // After wallet connection
+          console.log("Validator Auth Button clicked");
           const publicKey = document.getElementById("publicKey").value;
-          const signature = JSON.parse(
-            document.getElementById("signedMessage").value
-          );
-          const message = `Validator Authentication - ${Date.now()}`;
+
+          // const signedMessage = JSON.parse(document.getElementById("signedMessage").value);
+          // const signature = bs58.encode(Uint8Array.from(signedMessage));
+          // const signedMessage = document.getElementById("signedMessage").value;
+          // const signature = bs58.encode(signedMessage);
+          // const signature = JSON.parse(
+          //   document.getElementById("signedMessage").value
+          // );
+
+          const base64Signature =
+            document.getElementById("signedMessage").value;
+
+          const message = document.getElementById("message").value;
           if (stompClient && stompClient.connected) {
             stompClient.disconnect();
           }
@@ -144,7 +165,7 @@
                 {},
                 JSON.stringify({
                   publicKey: publicKey,
-                  signature: Array.from(signedMessage.signature),
+                  signature: base64Signature,
                   message: message,
                   callbackId: generateUUID(), // Client-generated
                 })
@@ -162,7 +183,8 @@
             },
             (error) => {
               console.error("WebSocket error:", error);
-              showError("WebSocket connection failed!");
+
+              showError("WebSocket connection failed! ${error.message}");
             }
           );
         });

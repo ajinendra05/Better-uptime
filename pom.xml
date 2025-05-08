@@ -134,6 +134,13 @@
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.70</version>
 		</dependency>
+		<dependency>
+			<groupId>com.mmorrell</groupId>
+			<artifactId>solanaj</artifactId>
+			<version>1.20.4</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

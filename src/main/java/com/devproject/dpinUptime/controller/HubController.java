@@ -65,6 +65,7 @@ public class HubController {
         log.info(null != request.getIp() ? "IP: " + request.getIp() : "IP: null");
         log.info("Message: " + request.getMessage());
         try {
+            log.info("working1");
             long timestamp = Long.parseLong(request.getMessage().split("- ")[1]);
             if (System.currentTimeMillis() - timestamp > 120_000) { // 2-minute window
                 sendError(headers.getSessionId(), "Expired signature");
@@ -82,12 +83,14 @@ public class HubController {
             }
 
             // Verify cryptographic signature
+            log.info("working2");
             boolean isValid = solanaService.verifySignature(
                     request.getMessage(),
                     request.getPublicKey(),
                     request.getSignature());
-
+            log.info("Signature verification result: " + isValid);
             if (isValid) {
+                log.info("working3");
                 Validator validator = validatorService.getOrCreateValidator(
                         request.getPublicKey(),
                         request.getIp());
@@ -96,14 +99,19 @@ public class HubController {
                 connectedValidators.put(headers.getSessionId(), validator.getId());
 
                 // Send confirmation
+                log.info("working4");
                 messagingTemplate.convertAndSendToUser(
                         headers.getSessionId(),
                         "/queue/signup",
                         new SignupResponse(validator.getId(), request.getCallbackId()));
+                log.info("Validator " + validator.getId() + " connected with session ID: " + headers.getSessionId());
             } else {
+                log.info("working5");
                 sendError(headers.getSessionId(), "Signature verification failed");
             }
         } catch (Exception e) {
+            log.info("working6");
+            log.error("Error during authentication: " + e.getMessage(), e);
             sendError(headers.getSessionId(), "Authentication error: " + e.getMessage());
         }
     }
@@ -224,5 +232,4 @@ public class HubController {
         connectedValidators.remove(sessionId);
     }
 
-    
 }
