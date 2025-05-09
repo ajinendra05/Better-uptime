@@ -70,7 +70,7 @@ public class HubController {
         log.info("request.getPublicKey(): " + request.getPublicKey());
         log.info("request.getCallbackId(): " + request.getCallbackId());
         log.info("request.getIp(): " + request.getIp());
-        
+
         try {
             log.info("working1");
             long timestamp = Long.parseLong(request.getMessage().split("- ")[1]);
@@ -107,9 +107,12 @@ public class HubController {
 
                 // Send confirmation
                 log.info("working4");
+                // messagingTemplate.convertAndSend(
+                // "/user/queue/signup",
+                // new SignupResponse(validator.getId(), request.getCallbackId()));
                 messagingTemplate.convertAndSendToUser(
                         headers.getSessionId(),
-                        "/user/queue/signup",
+                        "/queue/signup",
                         new SignupResponse(validator.getId(), request.getCallbackId()));
                 log.info("Validator " + validator.getId() + " connected with session ID: " + headers.getSessionId());
             } else {
