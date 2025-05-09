@@ -64,6 +64,13 @@ public class HubController {
         log.info("Session ID: " + headers.getSessionId());
         log.info(null != request.getIp() ? "IP: " + request.getIp() : "IP: null");
         log.info("Message: " + request.getMessage());
+        log.info("request: " + request);
+        log.info("request.getMessage(): " + request.getMessage());
+        log.info("request.getSignature(): " + request.getSignature());
+        log.info("request.getPublicKey(): " + request.getPublicKey());
+        log.info("request.getCallbackId(): " + request.getCallbackId());
+        log.info("request.getIp(): " + request.getIp());
+        
         try {
             log.info("working1");
             long timestamp = Long.parseLong(request.getMessage().split("- ")[1]);
@@ -102,7 +109,7 @@ public class HubController {
                 log.info("working4");
                 messagingTemplate.convertAndSendToUser(
                         headers.getSessionId(),
-                        "/queue/signup",
+                        "/user/queue/signup",
                         new SignupResponse(validator.getId(), request.getCallbackId()));
                 log.info("Validator " + validator.getId() + " connected with session ID: " + headers.getSessionId());
             } else {

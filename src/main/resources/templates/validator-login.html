@@ -15,13 +15,13 @@
       <div class="gradient-background"></div>
 
       <div class="auth-card">
-        <div class="logo-container">
+        <!-- <div class="logo-container">
           <img
             th:src="@{/images/logo.svg}"
             alt="Uptime Monitor Logo"
             class="logo"
           />
-        </div>
+        </div> -->
 
         <div th:if="${error}" class="alert alert-error">
           <i class="fas fa-exclamation-circle"></i>
@@ -159,6 +159,15 @@
           stompClient.connect(
             {},
             () => {
+              // Handle response
+              stompClient.subscribe(`/user/queue/signup`, (response) => {
+                showSuccess("Authentication successful! Redirecting...");
+                // setTimeout(() => (window.location.href = "..."), 2000);
+                window.location.href = "/validator/dashboard";
+              });
+              stompClient.subscribe(`/user/queue/errors`, (error) => {
+                showError(JSON.parse(error.body).error);
+              });
               // Send login request via WebSocket
               stompClient.send(
                 "/app/validator/login",
@@ -170,16 +179,6 @@
                   callbackId: generateUUID(), // Client-generated
                 })
               );
-
-              // Handle response
-              stompClient.subscribe(`/user/queue/signup`, (response) => {
-                showSuccess("Authentication successful! Redirecting...");
-                setTimeout(() => (window.location.href = "..."), 2000);
-                window.location.href = "/validator/dashboard";
-              });
-              stompClient.subscribe(`/user/queue/errors`, (error) => {
-                showError(JSON.parse(error.body).error);
-              });
             },
             (error) => {
               console.error("WebSocket error:", error);
