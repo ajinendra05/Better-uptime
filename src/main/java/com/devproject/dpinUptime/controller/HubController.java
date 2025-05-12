@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import com.devproject.dpinUptime.DTO.ValidatorsDTO.ValidateRequest;
+
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
@@ -59,17 +61,8 @@ public class HubController {
     }
 
     @MessageMapping("/validator/login")
-    public void handleSignup(SignupRequest request, StompHeaderAccessor headers) {
-        log.info("Received signup request from: " + request.getPublicKey());
-        log.info("Session ID: " + headers.getSessionId());
-        log.info(null != request.getIp() ? "IP: " + request.getIp() : "IP: null");
-        log.info("Message: " + request.getMessage());
-        log.info("request: " + request);
-        log.info("request.getMessage(): " + request.getMessage());
-        log.info("request.getSignature(): " + request.getSignature());
-        log.info("request.getPublicKey(): " + request.getPublicKey());
-        log.info("request.getCallbackId(): " + request.getCallbackId());
-        log.info("request.getIp(): " + request.getIp());
+    public void handleSignup(SignupRequest request, StompHeaderAccessor headers, Principal principal) {
+        
 
         try {
             log.info("working1");
@@ -108,10 +101,10 @@ public class HubController {
                 // Send confirmation
                 log.info("working4");
                 // messagingTemplate.convertAndSend(
-                // "/user/queue/signup",
+                // "/user/" + headers.getSessionId() + "/queue/signup",
                 // new SignupResponse(validator.getId(), request.getCallbackId()));
                 messagingTemplate.convertAndSendToUser(
-                        headers.getSessionId(),
+                        principal.getName(),
                         "/queue/signup",
                         new SignupResponse(validator.getId(), request.getCallbackId()));
                 log.info("Validator " + validator.getId() + " connected with session ID: " + headers.getSessionId());
@@ -125,6 +118,15 @@ public class HubController {
             sendError(headers.getSessionId(), "Authentication error: " + e.getMessage());
         }
     }
+
+    // @MessageMapping("/user/queue/signup")
+    // public void handleSignupResponse(SignupResponse response, StompHeaderAccessor
+    // headers) {
+    // log.info("fjsifhsfksdhfdjjjddddddddddddddddddddddd");
+    // log.info("Received signup response: " + response);
+    // String sessionId = headers.getSessionId();
+    // log.info("Session ID: " + sessionId);
+    // }
 
     private void sendError(String sessionId, String message) {
         messagingTemplate.convertAndSendToUser(

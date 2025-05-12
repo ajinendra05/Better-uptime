@@ -14,7 +14,11 @@ public class Validator {
     private String location;
     private String ip;
     private Long pendingPayout;
+    private final String role = "VALIDATOR";
 
+    public String getRole() {
+        return role;
+    }
     public Validator() {
     }
 

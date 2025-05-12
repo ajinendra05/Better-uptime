@@ -27,12 +27,12 @@ public class SecurityConfig {
                 http
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/", "/register", "/login", "/login/validator",
-                                                                "/static/**", "/css/**","/ws/**",
+                                                                "/static/**", "/css/**", "/ws/**",
                                                                 "/js/**")
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/monitors").authenticated()
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                                                .requestMatchers("/validator/**").hasRole("VALIDATOR")
+                                                // .requestMatchers("/validator/**").hasRole("VALIDATOR")
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
@@ -45,8 +45,8 @@ public class SecurityConfig {
                                                 .logoutSuccessUrl("/login?logout")
                                                 .invalidateHttpSession(true)
                                                 .deleteCookies("JSESSIONID"))
-                                .formLogin(form -> form
-                                                .loginPage("/validator/login"))
+                                // .formLogin(form -> form
+                                // .loginPage("/validator/login"))
                                 .logout(logout -> logout
                                                 .logoutUrl("/validator/logout")
                                                 .logoutSuccessUrl("/validator/login?logout")

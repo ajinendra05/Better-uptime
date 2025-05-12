@@ -162,7 +162,9 @@
               // Handle response
               stompClient.subscribe(`/user/queue/signup`, (response) => {
                 showSuccess("Authentication successful! Redirecting...");
-                console.log("${response.body}");
+                console.log("" + response.body + "  " + response);
+                // console.log("header" + response. + "  " + response);
+
                 // setTimeout(() => (window.location.href = "..."), 2000);
                 // window.location.href = "/validator/dashboard";
               });
