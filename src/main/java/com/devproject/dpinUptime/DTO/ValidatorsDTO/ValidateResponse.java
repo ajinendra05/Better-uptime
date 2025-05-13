@@ -1,43 +1,75 @@
 package com.devproject.dpinUptime.DTO.ValidatorsDTO;
 
+enum Status {
+    SUCCESS,
+    FAILURE,
+}
+
 public class ValidateResponse {
-    private String status;
+    private Status status;
     private int latency;
     private String callbackId;
-
+    private String Signature;
+    private Long validatorID;
+    private String websiteID;
 
     // Getters, setters, constructor
-        public ValidateResponse(String status, int latency, String callbackId) {
-            this.status = status;
-            this.latency = latency;
-            this.callbackId = callbackId;
-        }
-        public String getCallbackId() {
-            return callbackId;
-        }
-        public void setCallbackId(String callbackId) {
-            this.callbackId = callbackId;
-        }
-    
-        
-        public ValidateResponse(String status, int latency) {
-            this.status = status;
-            this.latency = latency;
-        }
-    
-        public String getStatus() {
-            return status;
-        }
-    
-        public void setStatus(String status) {
-            this.status = status;
-        }
-    
-        public int getLatency() {
-            return latency;
-        }
-    
-        public void setLatency(int latency) {
-            this.latency = latency;
-        }
+    public ValidateResponse(Status status, int latency, String callbackId, String signature, Long validatorID,
+            String websiteID) {
+        this.status = status;
+        this.latency = latency;
+        this.callbackId = callbackId;
+        Signature = signature;
+        this.validatorID = validatorID;
+        this.websiteID = websiteID;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public int getLatency() {
+        return latency;
+    }
+
+    public void setLatency(int latency) {
+        this.latency = latency;
+    }
+
+    public String getCallbackId() {
+        return callbackId;
+    }
+
+    public void setCallbackId(String callbackId) {
+        this.callbackId = callbackId;
+    }
+
+    public String getSignature() {
+        return Signature;
+    }
+
+    public void setSignature(String signature) {
+        Signature = signature;
+    }
+
+    public Long getValidatorID() {
+        return validatorID;
+    }
+
+    public void setValidatorID(Long validatorID) {
+        this.validatorID = validatorID;
+    }
+
+    public String getWebsiteID() {
+        return websiteID;
+    }
+
+    public void setWebsiteID(String websiteID) {
+        this.websiteID = websiteID;
+    }
+
 }

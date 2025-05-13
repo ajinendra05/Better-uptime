@@ -1,247 +1,191 @@
-package com.devproject.dpinUptime.controller;
+// package com.devproject.dpinUptime.controller;
 
-import com.devproject.dpinUptime.DTO.ValidatorsDTO.SignupRequest;
-import com.devproject.dpinUptime.DTO.ValidatorsDTO.SignupResponse;
-import com.devproject.dpinUptime.DTO.ValidatorsDTO.ValidateResponse;
-import com.devproject.dpinUptime.service.Validatorservice.SolanaServiceImpl;
-import com.devproject.dpinUptime.service.Validatorservice.ValidatorService;
-import com.devproject.dpinUptime.service.Validatorservice.WebsiteTickService;
-import com.devproject.dpinUptime.service.UrlMonitoringService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import com.devproject.dpinUptime.DTO.ValidatorsDTO.ValidateRequest;
+// import com.devproject.dpinUptime.DTO.ValidatorsDTO.SignupRequest;
+// import com.devproject.dpinUptime.DTO.ValidatorsDTO.SignupResponse;
+// import com.devproject.dpinUptime.DTO.ValidatorsDTO.ValidateResponse;
+// import com.devproject.dpinUptime.service.Validatorservice.SolanaServiceImpl;
+// import com.devproject.dpinUptime.service.Validatorservice.ValidatorService;
+// import com.devproject.dpinUptime.service.Validatorservice.WebsiteTickService;
+// import com.fasterxml.jackson.core.JsonProcessingException;
+// import com.fasterxml.jackson.databind.JsonNode;
+// import com.devproject.dpinUptime.service.UrlMonitoringService;
+// import org.springframework.stereotype.Controller;
+// import org.springframework.web.socket.handler.TextWebSocketHandler;
+// import org.springframework.web.socket.TextMessage;
+// import org.springframework.web.socket.WebSocketSession;
+// import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+// import org.springframework.messaging.simp.SimpMessagingTemplate;
+// import com.devproject.dpinUptime.DTO.ValidatorsDTO.ValidateRequest;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.Base64;
-import java.util.function.Consumer;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import com.devproject.dpinUptime.model.Validator;
-import com.devproject.dpinUptime.model.MonitoredUrl;
+// import java.io.IOException;
+// import java.security.Principal;
+// import java.util.ArrayList;
+// import java.util.Map;
+// import java.util.UUID;
+// import java.util.concurrent.ConcurrentHashMap;
+// import java.util.Base64;
+// import java.util.function.Consumer;
+// import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+// import com.devproject.dpinUptime.model.Validator;
+// import com.devproject.dpinUptime.model.MonitoredUrl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.PostMapping;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.context.event.EventListener;
+// import org.springframework.messaging.handler.annotation.MessageMapping;
+// import org.springframework.scheduling.annotation.Scheduled;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
+// import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.fasterxml.jackson.databind.node.ObjectNode;
+// import org.springframework.transaction.annotation.Transactional;
+// import org.springframework.web.bind.annotation.RequestBody;
+// import com.devproject.dpinUptime.DTO.ValidatorsDTO.ValidatorSession;
 
-@Controller
-public class HubController {
+// @Controller
+// public class HubController {
+    
+//     private final Map<String, ValidatorSession> activeValidators = new ConcurrentHashMap<>();
+//     private final Map<String, Consumer<ValidationResult>> callbacks = new ConcurrentHashMap<>();
+    
+//     private final ValidatorRepository validatorRepository;
+//     private final WebsiteRepository websiteRepository;
+//     private final WebsiteTickRepository websiteTickRepository;
+//     private final SimpMessagingTemplate messagingTemplate;
+//     private final SolanaService solanaService;
 
-    private static final Logger log = LoggerFactory.getLogger(DashboardController.class);
+//     @Autowired
+//     public HubController(ValidatorRepository validatorRepository,
+//                         WebsiteRepository websiteRepository,
+//                         WebsiteTickRepository websiteTickRepository,
+//                         SimpMessagingTemplate messagingTemplate,
+//                         SolanaService solanaService) {
+//         this.validatorRepository = validatorRepository;
+//         this.websiteRepository = websiteRepository;
+//         this.websiteTickRepository = websiteTickRepository;
+//         this.messagingTemplate = messagingTemplate;
+//         this.solanaService = solanaService;
+//     }
 
-    private final SimpMessagingTemplate messagingTemplate;
-    private final ValidatorService validatorService;
-    private final UrlMonitoringService websiteService;
-    private final WebsiteTickService websiteTickService;
-    private final SolanaServiceImpl solanaService;
-
-    private final Map<String, Long> connectedValidators = new ConcurrentHashMap<>();
-    private final Map<String, Consumer<ValidateResponse>> callbacks = new ConcurrentHashMap<>();
-
-    @Autowired
-    public HubController(
-            SimpMessagingTemplate messagingTemplate,
-            ValidatorService validatorService,
-            UrlMonitoringService websiteService,
-            WebsiteTickService websiteTickService,
-            SolanaServiceImpl solanaService) {
-        this.messagingTemplate = messagingTemplate;
-        this.validatorService = validatorService;
-        this.websiteService = websiteService;
-        this.websiteTickService = websiteTickService;
-        this.solanaService = solanaService;
-    }
-
-    @MessageMapping("/validator/login")
-    public void handleSignup(SignupRequest request, StompHeaderAccessor headers, Principal principal) {
+//     @MessageMapping("/signup")
+//     public void handleSignup(SignupRequest request, StompHeaderAccessor headers) {
+//         String message = String.format("Signed message for %s, %s", 
+//             request.callbackId(), request.publicKey());
         
+//         if (!solanaService.verifySignature(message, request.publicKey(), request.signature())) {
+//             sendError(headers.getSessionId(), "Invalid signature");
+//             return;
+//         }
 
-        try {
-            log.info("working1");
-            long timestamp = Long.parseLong(request.getMessage().split("- ")[1]);
-            if (System.currentTimeMillis() - timestamp > 120_000) { // 2-minute window
-                sendError(headers.getSessionId(), "Expired signature");
-                return;
-            }
-        } catch (Exception e) {
-            sendError(headers.getSessionId(), "Invalid authentication message");
-            return;
-        }
-        try {
-            // Verify signature format first
-            if (!isValidSolanaSignature(request.getSignature())) {
-                sendError(headers.getSessionId(), "Invalid signature format");
-                return;
-            }
+//         validatorRepository.findByPublicKey(request.publicKey())
+//             .ifPresentOrElse(
+//                 validator -> handleExistingValidator(validator, headers, request.callbackId()),
+//                 () -> handleNewValidator(request, headers)
+//             );
+//     }
 
-            // Verify cryptographic signature
-            log.info("working2");
-            boolean isValid = solanaService.verifySignature(
-                    request.getMessage(),
-                    request.getPublicKey(),
-                    request.getSignature());
-            log.info("Signature verification result: " + isValid);
-            if (isValid) {
-                log.info("working3");
-                Validator validator = validatorService.getOrCreateValidator(
-                        request.getPublicKey(),
-                        request.getIp());
+//     @MessageMapping("/validate")
+//     @Transactional
+//     public void handleValidation(ValidationResponse response) {
+//         if (!callbacks.containsKey(response.callbackId())) return;
+        
+//         callbacks.get(response.callbackId()).accept(response);
+//         callbacks.remove(response.callbackId());
+//     }
 
-                // Store session with expiration
-                connectedValidators.put(headers.getSessionId(), validator.getId());
+//     @Scheduled(fixedRate = 60_000)
+//     public void distributeValidationTasks() {
+//         List<Website> websites = websiteRepository.findByDisabledFalse();
+//         List<ValidatorSession> validators = new ArrayList<>(activeValidators.values());
 
-                // Send confirmation
-                log.info("working4");
-                // messagingTemplate.convertAndSend(
-                // "/user/" + headers.getSessionId() + "/queue/signup",
-                // new SignupResponse(validator.getId(), request.getCallbackId()));
-                messagingTemplate.convertAndSendToUser(
-                        principal.getName(),
-                        "/queue/signup",
-                        new SignupResponse(validator.getId(), request.getCallbackId()));
-                log.info("Validator " + validator.getId() + " connected with session ID: " + headers.getSessionId());
-            } else {
-                log.info("working5");
-                sendError(headers.getSessionId(), "Signature verification failed");
-            }
-        } catch (Exception e) {
-            log.info("working6");
-            log.error("Error during authentication: " + e.getMessage(), e);
-            sendError(headers.getSessionId(), "Authentication error: " + e.getMessage());
-        }
-    }
+//         if (websites.isEmpty() || validators.isEmpty()) return;
 
-    // @MessageMapping("/user/queue/signup")
-    // public void handleSignupResponse(SignupResponse response, StompHeaderAccessor
-    // headers) {
-    // log.info("fjsifhsfksdhfdjjjddddddddddddddddddddddd");
-    // log.info("Received signup response: " + response);
-    // String sessionId = headers.getSessionId();
-    // log.info("Session ID: " + sessionId);
-    // }
+//         int batchSize = Math.max(websites.size() / validators.size(), 1);
 
-    private void sendError(String sessionId, String message) {
-        messagingTemplate.convertAndSendToUser(
-                sessionId,
-                "/queue/errors",
-                Map.of("error", message));
-    }
+//         for (int i = 0; i < validators.size(); i++) {
+//             ValidatorSession validator = validators.get(i);
+//             int start = i * batchSize;
+//             int end = Math.min(start + batchSize, websites.size());
 
-    private boolean isValidSolanaSignature(String signature) {
-        try {
-            byte[] sigBytes = Base64.getDecoder().decode(signature);
-            return sigBytes.length == 64; // Ed25519 signature length
-        } catch (Exception e) {
-            return false;
-        }
-    }
+//             websites.subList(start, end).forEach(website -> 
+//                 sendValidationTask(website, validator)
+//             );
+//         }
+//     }
 
-    @MessageMapping("/validate")
-    public void handleValidation(ValidateResponse response, StompHeaderAccessor headers) {
-        String sessionId = headers.getSessionId();
-        if (!connectedValidators.containsKey(sessionId)) {
-            sendError(sessionId, "Unauthorized validation attempt");
-            return;
-        }
-        if (callbacks.containsKey(response.getCallbackId())) {
-            callbacks.get(response.getCallbackId()).accept(response);
-            callbacks.remove(response.getCallbackId());
-        }
-    }
+//     private void sendValidationTask(Website website, ValidatorSession validator) {
+//         String callbackId = UUID.randomUUID().toString();
+        
+//         callbacks.put(callbackId, response -> {
+//             if (!solanaService.verifySignature(
+//                 "Replying to " + callbackId,
+//                 validator.publicKey(),
+//                 response.signature()
+//             )) return;
 
-    // @Scheduled(fixedRate = 180_000)
-    // public void distributeUrls() {
-    // ArrayList<MonitoredUrl> websites = new
-    // ArrayList<>(websiteService.getActiveUrl());
-    // ArrayList<Long> validatorIds = new ArrayList<>(connectedValidators.values());
+//             websiteTickRepository.save(new WebsiteTick(
+//                 website.getId(),
+//                 validator.id(),
+//                 response.status(),
+//                 response.latency(),
+//                 Instant.now()
+//             ));
 
-    // if (validatorIds.isEmpty() || websites.isEmpty())
-    // return;
+//             validatorRepository.updatePendingPayouts(validator.id(), 100);
+//         });
 
-    // int batchSize = Math.max(websites.size() / validatorIds.size(), 1);
+//         messagingTemplate.convertAndSendToUser(
+//             validator.sessionId(),
+//             "/queue/validate",
+//             new ValidationTask(
+//                 website.getUrl(),
+//                 callbackId,
+//                 website.getId()
+//             )
+//         );
+//     }
 
-    // for (int i = 0; i < validatorIds.size(); i++) {
-    // final Long validatorId = validatorIds.get(i);
-    // int fromIndex = i * batchSize;
-    // int toIndex = Math.min((i + 1) * batchSize, websites.size());
+//     private void handleExistingValidator(Validator validator, 
+//                                        StompHeaderAccessor headers,
+//                                        String callbackId) {
+//         activeValidators.put(headers.getSessionId(), new ValidatorSession(
+//             validator.getId(),
+//             headers.getSessionId(),
+//             validator.getPublicKey()
+//         ));
 
-    // websites.subList(fromIndex, toIndex).forEach(website -> {
-    // String callbackId = UUID.randomUUID().toString();
+//         messagingTemplate.convertAndSendToUser(
+//             headers.getSessionId(),
+//             "/queue/signup",
+//             new SignupResponse(validator.getId(), callbackId)
+//         );
+//     }
 
-    // callbacks.put(callbackId, response -> {
-    // websiteTickService.saveTick(
-    // website.getId(),
-    // validatorId,
-    // response.getStatus(),
-    // response.getLatency());
-    // validatorService.addCredits(validatorId, 100);
-    // });
+//     private void handleNewValidator(SignupRequest request, StompHeaderAccessor headers) {
+//         Validator newValidator = validatorRepository.save(new Validator(
+//             request.publicKey(),
+//             request.ip(),
+//             "unknown"
+//         ));
 
-    // messagingTemplate.convertAndSendToUser(
-    // validatorId.toString(),
-    // "/queue/validate",
-    // new ValidateRequest(
-    // website.getUrl(),
-    // callbackId,
-    // website.getId()));
-    // });
-    // }
-    // }
-    @Scheduled(fixedRate = 180_000)
-    public void distributeUrls() {
-        ArrayList<MonitoredUrl> websites = new ArrayList<>(websiteService.getActiveUrl());
+//         activeValidators.put(headers.getSessionId(), new ValidatorSession(
+//             newValidator.getId(),
+//             headers.getSessionId(),
+//             newValidator.getPublicKey()
+//         ));
 
-        // Get all active session IDs
-        ArrayList<String> sessionIds = new ArrayList<>(connectedValidators.keySet());
+//         messagingTemplate.convertAndSendToUser(
+//             headers.getSessionId(),
+//             "/queue/signup",
+//             new SignupResponse(newValidator.getId(), request.callbackId())
+//         );
+//     }
 
-        if (sessionIds.isEmpty() || websites.isEmpty())
-            return;
-
-        int batchSize = Math.max(websites.size() / sessionIds.size(), 1);
-
-        for (int i = 0; i < sessionIds.size(); i++) {
-            String sessionId = sessionIds.get(i);
-            Long validatorId = connectedValidators.get(sessionId);
-
-            int fromIndex = i * batchSize;
-            int toIndex = Math.min((i + 1) * batchSize, websites.size());
-
-            websites.subList(fromIndex, toIndex).forEach(website -> {
-                String callbackId = UUID.randomUUID().toString();
-
-                callbacks.put(callbackId, response -> {
-                    websiteTickService.saveTick(
-                            website.getId(),
-                            validatorId,
-                            response.getStatus(),
-                            response.getLatency());
-                    validatorService.addCredits(validatorId, 100);
-                });
-
-                // Send directly to session ID
-                messagingTemplate.convertAndSendToUser(
-                        sessionId,
-                        "/queue/validate",
-                        new ValidateRequest(
-                                website.getUrl(),
-                                callbackId,
-                                website.getId()));
-            });
-        }
-    }
-
-    @EventListener
-    public void handleWebSocketDisconnect(SessionDisconnectEvent event) {
-        String sessionId = event.getSessionId();
-        connectedValidators.remove(sessionId);
-    }
-
-}
+//     private void sendError(String sessionId, String message) {
+//         messagingTemplate.convertAndSendToUser(
+//             sessionId,
+//             "/queue/errors",
+//             Map.of("error", message)
+//         );
+//     }
+// }

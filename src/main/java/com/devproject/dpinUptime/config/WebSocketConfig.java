@@ -48,62 +48,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // registry.enableSimpleBroker("/queue", "/topic");
         registry.enableSimpleBroker("/queue", "/topic");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
-        // logger.info("WebSocket message broker configured with user destination
-        // prefix: /user");
-        // logger.info(registry.getUserDestinationPrefix());
-        // registry.setApplicationDestinationPrefixes("/app");
-        // registry.enableSimpleBroker("/topic");
-        // registry.enableSimpleBroker("/queue"); // <- No /user here
-        // registry.setUserDestinationPrefix("/user");
+
     }
 
-    // @Override
-    // public void configureClientInboundChannel(ChannelRegistration registration) {
-    // registration.interceptors(new ChannelInterceptor() {
-    // @Override
-    // public Message<?> preSend(Message<?> message, MessageChannel channel) {
-    // StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-    // if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-    // String sessionId = accessor.getSessionId();
-
-    // accessor.setUser(new WebSocketPrincipal(sessionId));
-
-    // logger.info("WebSocket connected: " + sessionId);
-    // logger.info("WebSocket connected: " + accessor.getUser().getName());
-    // logger.info("user name: " + accessor.getUser().getName());
-    // }
-    // return message;
-    // }
-    // });
-    // }
-    // @Override
-    // public void configureClientInboundChannel(ChannelRegistration registration) {
-    // registration.interceptors(new ChannelInterceptor() {
-    // @Override
-    // public Message<?> preSend(Message<?> message, MessageChannel channel) {
-    // StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-    // if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-    // String sessionId = accessor.getSessionId();
-    // String user = accessor.getFirstNativeHeader("user");
-    // List<GrantedAuthority> authorities = new ArrayList<>();
-    // authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-    // Authentication auth = new UsernamePasswordAuthenticationToken(user, user,
-    // authorities);
-    // SecurityContextHolder.getContext().setAuthentication(auth);
-    // accessor.setUser(new WebSocketPrincipal(sessionId));
-
-    // logger.info("WebSocket connected: " + sessionId);
-    // logger.info("WebSocket connected: " + accessor.getUser().getName());
-    // logger.info("user name: " + accessor.getUser().getName());
-    // }
-    // return message;
-    // }
-    // });
-    // }
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
@@ -115,17 +65,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
 
-                    // List<GrantedAuthority> authorities = new ArrayList<>();
-                    // authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
                     Authentication auth = new UsernamePasswordAuthenticationToken(accessor.getSessionId(),
                             accessor.getSessionId(),
                             AuthorityUtils.createAuthorityList("ROLE_USER"));
                     SecurityContextHolder.getContext().setAuthentication(auth);
-                    logger.info("User: {}" + auth.getName());
-                    // logger.info("Session ID: {}", accessor.getSessionId());
-                    // logger.info("User: {}", accessor.getUser());
-                    // logger.info("User name: {}", accessor.getUser().getName());
-                    // logger.info("Authorities: {}", auth.getAuthorities());
+
                     accessor.setUser(auth);
 
                 }
