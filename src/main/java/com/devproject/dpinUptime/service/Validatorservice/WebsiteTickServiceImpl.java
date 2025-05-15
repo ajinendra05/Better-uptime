@@ -3,6 +3,8 @@ import com.devproject.dpinUptime.model.WebsiteTick;
 import com.devproject.dpinUptime.repository.WebsiteTickRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.devproject.dpinUptime.model.Status;
 import java.time.LocalDateTime;
 
 
@@ -18,7 +20,7 @@ public class WebsiteTickServiceImpl implements WebsiteTickService {
     }
 
     @Override
-    public void saveTick(Long websiteId, Long validatorId, String status, int latency) {
+    public void saveTick(Long websiteId, Long validatorId, Status status, int latency) {
         WebsiteTick tick = new WebsiteTick();
         tick.setWebsiteId(websiteId);
         tick.setValidatorId(validatorId);

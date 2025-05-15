@@ -1,11 +1,11 @@
-// package com.devproject.dpinUptime.repository;
+package com.devproject.dpinUptime.repository;
 
-// import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-// import com.devproject.dpinUptime.model.MonitoredUrl;
+import com.devproject.dpinUptime.model.MonitoredUrl;
 
-// import java.util.List;
+import java.util.List;
 
-// public interface WebsiteRepository extends JpaRepository<MonitoredUrl, String> {
-//     List<MonitoredUrl> findByDisabledFalse();
-// }
+public interface WebsiteRepository extends JpaRepository<MonitoredUrl, String> {
+    List<MonitoredUrl> findByDisabledFalse();
+}

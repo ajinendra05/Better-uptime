@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
 @EnableWebSecurity
@@ -56,9 +57,12 @@ public class SecurityConfig {
                                                 .key("uniqueAndSecretKey")
                                                 .tokenValiditySeconds(86400)
                                                 .userDetailsService(userDetailsService))
+                                // .sessionManagement(session -> session
+                                //                 .maximumSessions(1)
+                                //                 .expiredUrl("/login?expired"))
                                 .sessionManagement(session -> session
-                                                .maximumSessions(1)
-                                                .expiredUrl("/login?expired"))
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+            )
                                 .exceptionHandling(exceptions -> exceptions
                                                 .accessDeniedPage("/access-denied"));
 

@@ -1,26 +1,23 @@
 package com.devproject.dpinUptime.DTO.ValidatorsDTO;
 
-enum Status {
-    SUCCESS,
-    FAILURE,
-}
+import com.devproject.dpinUptime.model.Status;
 
 public class ValidateResponse {
     private Status status;
     private int latency;
     private String callbackId;
     private String Signature;
-    private Long validatorID;
+    // private String publicKey;
     private String websiteID;
 
     // Getters, setters, constructor
-    public ValidateResponse(Status status, int latency, String callbackId, String signature, Long validatorID,
+    public ValidateResponse(Status status, int latency, String callbackId, String signature,
             String websiteID) {
         this.status = status;
         this.latency = latency;
         this.callbackId = callbackId;
         Signature = signature;
-        this.validatorID = validatorID;
+        // this.publicKey = publicKey;
         this.websiteID = websiteID;
     }
 
@@ -56,13 +53,13 @@ public class ValidateResponse {
         Signature = signature;
     }
 
-    public Long getValidatorID() {
-        return validatorID;
-    }
+    // public String getpublicKey() {
+    // return publicKey;
+    // }
 
-    public void setValidatorID(Long validatorID) {
-        this.validatorID = validatorID;
-    }
+    // public void setpublicKey(String publicKey) {
+    // this.publicKey = publicKey;
+    // }
 
     public String getWebsiteID() {
         return websiteID;

@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -30,6 +31,8 @@ public class MonitoredUrl {
     private long responseTime;
     @Enumerated(EnumType.STRING)
     private UrlStatus status;
+    @Column(nullable = false)
+    private boolean disabled = false;
 
     @ElementCollection
     @CollectionTable(name = "uptime_history", joinColumns = @JoinColumn(name = "url_id"))
@@ -109,6 +112,14 @@ public class MonitoredUrl {
 
     public void setStatus(UrlStatus status) {
         this.status = status;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
 }

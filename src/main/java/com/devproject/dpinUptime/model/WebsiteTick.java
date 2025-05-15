@@ -10,7 +10,7 @@ public class WebsiteTick {
     private Long id;
     private Long websiteId;
     private Long validatorId;
-    private String status;
+    private Status status;
     private int latency;
     private LocalDateTime createdAt;
 
@@ -38,11 +38,11 @@ public class WebsiteTick {
         this.validatorId = validatorId;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
