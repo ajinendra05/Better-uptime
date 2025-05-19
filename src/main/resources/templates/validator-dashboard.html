@@ -1,44 +1,69 @@
+<!-- templates/validator/dashboard.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Validator Dashboard</title>
-    <link th:href="@{/css/validator.css}" rel="stylesheet">
-    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-</head>
-<body>
-    <div th:replace="fragments/header :: header"></div>
-    
-    <div class="container mt-4">
-        <h2>URLs to Validate</h2>
-        
-        <div th:if="${#lists.isEmpty(urls)}" class="alert alert-info">
-            No URLs need validation at this time
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Validator Dashboard | Uptime Monitor</title>
+    <link th:href="@{/css/validator_dashboard.css}" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="dashboard-nav">
+      <div class="nav-brand">Validator Dashboard</div>
+      <button id="disconnectBtn" class="btn-danger">
+        <i class="fas fa-plug"></i> Disconnect
+      </button>
+    </nav>
+
+    <div class="dashboard-container">
+      <!-- Status Overview -->
+      <div class="status-card">
+        <h3><i class="fas fa-tachometer-alt"></i> Performance Metrics</h3>
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-value" id="pendingRequests">0</div>
+            <div class="metric-label">Pending Validations</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value" id="successRate">100%</div>
+            <div class="metric-label">Success Rate</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value" id="avgLatency">0ms</div>
+            <div class="metric-label">Avg. Latency</div>
+          </div>
         </div>
-        
-        <table class="table" th:unless="${#lists.isEmpty(urls)}">
-            <thead>
-                <tr>
-                    <th>URL</th>
-                    <th>Last Checked</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="url : ${urls}">
-                    <td th:text="${url.url}"></td>
-                    <td th:text="${#temporals.format(url.lastChecked, 'dd-MM-yyyy HH:mm')}"></td>
-                    <td th:text="${url.status}"></td>
-                    <td>
-                        <a th:href="@{/validator/validate/{callbackId}(callbackId=${url.callbackId})}" 
-                           class="btn btn-primary">
-                            Validate
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+      </div>
+
+      <!-- Validation Queue -->
+      <div class="main-card">
+        <div class="card-header">
+          <h3><i class="fas fa-tasks"></i> Validation Queue</h3>
+          <div class="last-updated" id="lastUpdated">Updated: Just now</div>
+        </div>
+        <div class="card-body">
+          <div id="validationQueue" class="queue-items">
+            <!-- Dynamic content will be inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Feed -->
+      <div class="side-card">
+        <h3><i class="fas fa-history"></i> Recent Activity</h3>
+        <div id="activityFeed" class="activity-items">
+          <!-- Activity items will be inserted here -->
+        </div>
+      </div>
     </div>
-</body>
+
+    <script th:src="@{/js/validatorClient.js}"></script>
+    <script>
+      
+    </script>
+  </body>
 </html>

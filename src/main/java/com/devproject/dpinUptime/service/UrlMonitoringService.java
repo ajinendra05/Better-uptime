@@ -24,60 +24,60 @@ public class UrlMonitoringService {
 
     @Autowired
     private UrlRepository urlRepository;
-    @Autowired
-    private AlertService alertService;
-    @Value("${monitoring.timeout}")
-    private int timeout;
-    @Value("${monitoring.interval}")
-    private long checkInterval;
+    // @Autowired
+    // private AlertService alertService;
+    // @Value("${monitoring.timeout}")
+    // private int timeout;
+    // @Value("${monitoring.interval}")
+    // private long checkInterval;
 
-    @Value("${monitoring.retries}")
-    private int retries;
+    // @Value("${monitoring.retries}")
+    // private int retries;
 
-    @Async
-    @Scheduled(fixedRateString = "1800000")
-    public void monitorAllUrls() {
-        log.info("Starting URL monitoring...");
-        List<MonitoredUrl> urls = urlRepository.findAll();
-        urls.forEach(url -> {
-            UrlStatus previousStatus = url.getStatus();
-            boolean isUp = checkUrlStatus(url);
-            url.setLastChecked(LocalDateTime.now());
-            urlRepository.save(url);
+    // @Async
+    // @Scheduled(fixedRateString = "1800000")
+    // public void monitorAllUrls() {
+    //     log.info("Starting URL monitoring...");
+    //     List<MonitoredUrl> urls = urlRepository.findAll();
+    //     urls.forEach(url -> {
+    //         UrlStatus previousStatus = url.getStatus();
+    //         boolean isUp = checkUrlStatus(url);
+    //         url.setLastChecked(LocalDateTime.now());
+    //         urlRepository.save(url);
 
-            if (previousStatus == UrlStatus.UP && !isUp) {
-                alertService.triggerAlert(url);
-            }
-        });
-    }
+    //         if (previousStatus == UrlStatus.UP && !isUp) {
+    //             alertService.triggerAlert(url);
+    //         }
+    //     });
+    // }
 
     public void addUrl(MonitoredUrl url) {
         urlRepository.save(url);
     }
 
-    private boolean checkUrlStatus(MonitoredUrl url) {
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url.getUrl()).openConnection();
-            connection.setConnectTimeout(timeout);
-            connection.setReadTimeout(timeout);
-            connection.setInstanceFollowRedirects(false);
+    // private boolean checkUrlStatus(MonitoredUrl url) {
+    //     try {
+    //         HttpURLConnection connection = (HttpURLConnection) new URL(url.getUrl()).openConnection();
+    //         connection.setConnectTimeout(timeout);
+    //         connection.setReadTimeout(timeout);
+    //         connection.setInstanceFollowRedirects(false);
 
-            int responseCode = connection.getResponseCode();
-            boolean isUp = (responseCode >= 200 && responseCode < 300);
-            url.setStatus(isUp ? UrlStatus.UP : UrlStatus.DOWN);
-            url.setResponseTime(measureResponseTime(connection));
-            return isUp;
-        } catch (IOException e) {
-            url.setStatus(UrlStatus.DOWN);
-            return false;
-        }
-    }
+    //         int responseCode = connection.getResponseCode();
+    //         boolean isUp = (responseCode >= 200 && responseCode < 300);
+    //         url.setStatus(isUp ? UrlStatus.UP : UrlStatus.DOWN);
+    //         url.setResponseTime(measureResponseTime(connection));
+    //         return isUp;
+    //     } catch (IOException e) {
+    //         url.setStatus(UrlStatus.DOWN);
+    //         return false;
+    //     }
+    // }
 
-    private long measureResponseTime(HttpURLConnection connection) throws IOException {
-        long start = System.currentTimeMillis();
-        connection.connect();
-        return System.currentTimeMillis() - start;
-    }
+    // private long measureResponseTime(HttpURLConnection connection) throws IOException {
+    //     long start = System.currentTimeMillis();
+    //     connection.connect();
+    //     return System.currentTimeMillis() - start;
+    // }
 
     public List<MonitoredUrl> getUrlsForUser(String userEmail) {
         return urlRepository.findByUserEmail(userEmail); // Fixed method name

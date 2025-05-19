@@ -177,93 +177,141 @@
               th:each="url : ${filter.urls}"
               class="mb-3 border-bottom pb-3"
             >
-              <!-- Website Item -->
+              <!-- Website Item Card -->
               <div
+                class="card mb-3 shadow-sm border-0 outer-webItem-card"
                 data-bs-toggle="collapse"
                 th:attr="data-bs-target='#details-' + ${url.id}"
-                aria-expanded="false" 
-      aria-controls="details-${url.id}"
-                class="outer-webItem-card"
+                aria-expanded="false"
+                th:attrappend="aria-controls='details-' + ${url.id}"
               >
-              <div class="webItem-card">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="inner-webItem-card">
+                <div
+                  class="card-body d-flex justify-content-between align-items-center pointer hover-shadow inner-webItem-card"
+                >
+                  <!-- Left: Status & Name -->
+                  <div class="d-flex align-items-center gap-2">
                     <span
-                      class="status-badge me-3"
-                      th:classappend="${(url.status == 'UP') ? 'bg-status-up' : ((url.status == 'SLOW') ? 'bg-status-warning' : 'bg-status-down')}"
+                      class="status-badge rounded-circle"
+                      style="width: 10px; height: 10px"
+                      th:classappend="${(url.status.name() == 'UP') ? 'bg-success' : (url.status.name() == 'DOWN') ? 'bg-danger' : 'bg-warning'}"
                     ></span>
-                    <span th:text="${url.name}">Website Name</span>
+                    <span class="fw-semibold" th:text="${url.name}"
+                      >Website Name</span
+                    >
                   </div>
-                  <div class="flex items-center space-x-6 flex-col">
-                    <!-- <Clock size={16} class="mr-1 bg-blue-500" />   -->
-                    <!-- <div>&#128339;</div> -->
-                    <div class="text-muted small">
-                      Updated:
+
+                  <!-- Right: URL, Timestamp, Response Time, Arrow -->
+                  <div
+                    class="d-flex align-items-center gap-4 flex-wrap text-muted small text-nowrap"
+                  >
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-globe me-1"></i>
                       <span
-                        th:text="${#temporals.format(url.lastChecked, 'hh:mm::ss a')}"
-                      ></span>
-                      <div
-                        class="hidden sm:block text-sm font-medium"
-                        th:classappend="${responseTimeClass}"
+                        class="text-truncate"
+                        style="max-width: 200px"
+                        th:text="${url.url}"
+                        >https://example.com</span
                       >
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-clock me-1"></i>
+                      <span
+                        >Updated:
                         <span
-                          th:text="${url.responseTime > 0} ? ${url.responseTime + 'ms'} : 'No response'"
-                          >Loading...</span
-                        >
+                          th:text="${#temporals.format(url.lastChecked, 'HH:mm:ss')}"
+                        ></span
+                      ></span>
+                    </div>
+                    <div
+                      th:classappend="${url.responseTime < 500 ? 'text-success' : (url.responseTime < 1000 ? 'text-warning' : 'text-danger')}"
+                      class="fw-medium"
+                    >
+                      <span
+                        th:text="${url.responseTime > 0} ? ${url.responseTime + 'ms'} : 'No response'"
+                      ></span>
+                    </div>
+                    <i class="bi bi-chevron-down"></i>
+                  </div>
+                </div>
+
+                <!-- Collapsible Details Section -->
+                <div
+                  th:attr="id='details-' + ${url.id}"
+                  class="collapse border-top inner-webItem-card2"
+                >
+                  <div class="p-3">
+                    <div class="mb-2 text-muted small">
+                      Uptime Last 30 Minutes
+                    </div>
+
+                    <!-- Block Graph -->
+                    <div
+                      class="d-flex flex-wrap gap-1 mb-2"
+                      th:with="totalItems=20, historySize=${#lists.size(url.uptimeHistory)}, reversedHistory=${url.uptimeHistory}"
+                    >
+                      <div
+                        th:each="i : ${#numbers.sequence(0, totalItems - 1)}"
+                        class="rounded"
+                        style="width: 4%; height: 8px"
+                        th:classappend="${i < historySize} ? 
+            (${reversedHistory[i].status.name() == 'SUCCESS'} ? 'bg-success' : 
+            (${reversedHistory[i].status.name() == 'FAILURE'} ? 'bg-danger' : 'bg-danger')) : 
+            'bg-secondary'"
+                        th:title="${i < historySize} ? 
+            ${#temporals.format(reversedHistory[i].timestamp, 'HH:mm:ss') + ' - ' + reversedHistory[i].responseTime + 'ms'} : 
+            'No data'"
+                      ></div>
+                    </div>
+
+                    <!-- Timeline & Legend -->
+                    <div
+                      class="d-flex justify-content-between text-muted small mb-3"
+                    >
+                      <span
+                        th:text="${#temporals.format(url.lastChecked.minusMinutes(30), 'HH:mm')}"
+                        >11:11</span
+                      >
+                      <span
+                        th:text="${#temporals.format(url.lastChecked, 'HH:mm')}"
+                        >11:38</span
+                      >
+                    </div>
+
+                    <div
+                      class="d-flex align-items-center gap-3 text-muted small flex-wrap"
+                    >
+                      <div class="d-flex align-items-center gap-1">
+                        <span
+                          class="bg-success rounded-circle d-inline-block"
+                          style="width: 8px; height: 8px"
+                        ></span>
+                        Online
+                      </div>
+                      <div class="d-flex align-items-center gap-1">
+                        <span
+                          class="bg-warning rounded-circle d-inline-block"
+                          style="width: 8px; height: 8px"
+                        ></span>
+                        Degraded
+                      </div>
+                      <div class="d-flex align-items-center gap-1">
+                        <span
+                          class="bg-danger rounded-circle d-inline-block"
+                          style="width: 8px; height: 8px"
+                        ></span>
+                        Offline
+                      </div>
+
+                      <div
+                        class="ms-auto d-flex align-items-center gap-1"
+                        th:classappend="${url.responseTime < 500 ? 'text-success' : (url.responseTime < 1000 ? 'text-warning' : 'text-danger')}"
+                      >
+                        <span class="fw-semibold">Response Time:</span>
+                        <span th:text="${url.responseTime + 'ms'}"></span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-                
-              </div>
-
-              <!-- Collapsible Section -->
-              <div th:attr="id='details-' + ${url.id}" class="collapse mt-3"   aria-labelledby="heading-${url.id}">
-                <div class="collapse-card">
-                  <div class="col-md-6">
-                    <h6 class="text-sm font-small text-gray-300 mb-2">
-                      Uptime Last 30 Minute
-                    </h6>
-                    <div class="uptime-history">
-                      <div
-                        th:each="entry : ${url.uptimeHistory}"
-                        class="status-dot"
-                        th:classappend="${(entry.status == 'UP') ? 'bg-success' : ((entry.status == 'degraded') ? 'bg-warning' : 'bg-danger')}"
-
-                        th:title="${#temporals.format(entry.timestamp, 'HH:mm:ss')} 
-                                               + ' - ' + ${entry.responseTime} + 'ms'"
-                      ></div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex gap-4 align-items-center"> <!-- Changed to Bootstrap spacing -->
-                            <!-- Status Indicators -->
-                            <div class="d-flex align-items-center">
-                                <div class="me-1 bg-success rounded-circle" style="width: 8px; height: 8px"></div>
-                                <span class="small">Online</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div class="me-1 bg-warning rounded-circle" style="width: 8px; height: 8px"></div>
-                                <span class="small">Degraded</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div class="me-1 bg-danger rounded-circle" style="width: 8px; height: 8px"></div>
-                                <span class="small">Offline</span>
-                            </div>
-                            
-                            <!-- Response Time -->
-                            <div class="d-flex align-items-center small" 
-                                 th:classappend="${url.responseTime} < 200 ? 'text-success' 
-                                                : (${url.responseTime} < 500 ? 'text-warning' : 'text-danger')">
-                                <span class="me-1">Response Time:</span>
-                                <span th:text="${url.responseTime} + 'ms'"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                  
               </div>
             </div>
           </div>
@@ -331,6 +379,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      // can we access all the urls here? which we passed from frontend as attribute to thymleaf
+      // const urls = [[${urls}]];
+      // const filters = /*[[${filters}]]*/ [];
+      // const currentFilter = /*[[${currentFilter}]]*/ "";
+      // const statusStats = /*[[${statusStats}]]*/ [];
+      // const isRefreshing = /*[[${isRefreshing}]]*/ false;
+
+      const websites = /*[[${websites}]]*/ [];
+      const websiteList = document.getElementById("websiteList");
+
       const themeToggle = document.getElementById("themeToggle");
       const savedTheme = localStorage.getItem("theme") || "light";
 

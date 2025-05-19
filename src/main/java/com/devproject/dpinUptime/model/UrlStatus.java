@@ -1,5 +1,6 @@
 package com.devproject.dpinUptime.model;
-
+// this status is used to show the status of the url in the frontend
+// it is not the same as the status of the website tick
 public enum UrlStatus {
     ALL("All Services"),
     UP("Online Services"),

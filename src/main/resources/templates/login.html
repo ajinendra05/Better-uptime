@@ -9,312 +9,176 @@
       rel="stylesheet"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    <link th:href="@{/css/login_style.css}" rel="stylesheet" />
   </head>
-  <body class="d-flex align-items-center min-vh-100">
+  <body>
     <div class="container">
-      <div class="auth-container bg-white mx-auto p-4 p-md-5">
-        <div class="text-center mb-5">
-          <h1 class="h2 fw-bold text-primary mb-3">DPIN Uptime</h1>
-          <p class="text-muted">Monitor your services with precision</p>
-        </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="auth-container">
+            <div class="row g-0">
+              <!-- Illustration Column -->
+              <div class="col-md-6 auth-illustration d-none d-md-block">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 500 500"
+                  style="width: 80%"
+                >
+                  <path
+                    fill="#fff"
+                    d="M250 50a200 200 0 1 0 0 400 200 200 0 0 0 0-400zm0 380a180 180 0 1 1 0-360 180 180 0 0 1 0 360z"
+                  />
+                  <path
+                    fill="#fff"
+                    d="M250 150c-55.2 0-100 44.8-100 100s44.8 100 100 100 100-44.8 100-100-44.8-100-100-100zm0 180c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z"
+                  />
+                  <path
+                    fill="#fff"
+                    d="M250 210c-22 0-40 18-40 40s18 40 40 40 40-18 40-40-18-40-40-40zm0 60c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20z"
+                  />
+                  <circle cx="250" cy="250" r="20" fill="#667eea" />
+                </svg>
+              </div>
 
-        <div th:if="${param.error}" class="alert alert-danger" role="alert">
-          Invalid username or password
-        </div>
+              <!-- Form Column -->
 
-        <form th:action="@{/login}" method="post">
-          <!-- <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> -->
-          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-          <!-- <input type="hidden" name="redirect" th:value="${param.redirect}" /> -->
-          <!-- //error message for invalid login -->
-          <div th:if="${param.error}" class="alert alert-danger">
-            Invalid email or password!
-          </div>
+              <div class="col-md-6 p-4 p-lg-5">
+                <div class="text-center mb-5">
+                  <h1 class="h2 fw-bold text-primary mb-3">DPIN Uptime</h1>
+                  <p class="text-muted">Smart Monitoring Solutions</p>
+                </div>
 
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              class="form-control form-control-lg"
-              id="email"
-              name="username"
-              required
-            />
-          </div>
+                <form th:action="@{/login}" method="post">
+                  <input
+                    type="hidden"
+                    th:name="${_csrf.parameterName}"
+                    th:value="${_csrf.token}"
+                  />
 
-          <div class="mb-4">
-            <label for="password" class="form-label">Password</label>
-            <input
-              type="password"
-              class="form-control form-control-lg"
-              id="password"
-              name="password"
-              required
-            />
-          </div>
+                  <div
+                    th:if="${param.error}"
+                    class="alert alert-danger"
+                    role="alert"
+                  >
+                    Invalid credentials. Please try again.
+                  </div>
 
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="remember"
-                name="remember-me"
-              />
-              <label class="form-check-label" for="remember">Remember me</label>
+                  <div class="mb-4">
+                    <label class="form-label">Email</label>
+                    <input
+                      type="email"
+                      class="form-control form-control-lg"
+                      name="username"
+                      placeholder="name@example.com"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input
+                      type="password"
+                      class="form-control form-control-lg"
+                      name="password"
+                      placeholder="••••••••"
+                      required
+                    />
+                  </div>
+
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-4"
+                  >
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="remember"
+                        name="remember-me"
+                      />
+                      <label class="form-check-label" for="remember"
+                        >Remember me</label
+                      >
+                    </div>
+                    <a href="#!" class="text-decoration-none text-primary"
+                      >Forgot Password?</a
+                    >
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-lg w-100 mb-4"
+                  >
+                    Sign In
+                  </button>
+
+                  <!-- <div class="text-center text-muted mb-4">
+                    or continue with
+                  </div>
+
+                  <div class="row g-3 social-login">
+                    <div class="col">
+                      <button type="button" class="btn w-100">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="#DB4437"
+                        >
+                          <path
+                            d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm6 12.429c0 3.5-2.5 4.071-5 4.071h-2v-2.714h2c1.5 0 2-.571 2-1.357 0-.786-.5-1.357-2-1.357h-2.5V9h2.5c2.5 0 4 1.286 4 3.429z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="col">
+                      <button type="button" class="btn w-100">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="#4267B2"
+                        >
+                          <path
+                            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm3 8h-1.35c-.538 0-.65.221-.65.778V10h2l-.209 2H13v7h-3v-7H8v-2h2V7.692C10 5.923 10.403 5 13.004 5H15v3z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="col">
+                      <button type="button" class="btn w-100">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="#1DA1F2"
+                        >
+                          <path
+                            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6.066 9.645c.096 4.938-3.406 10.446-9.75 10.446-1.938 0-3.723-.563-5.25-1.529 1.828.228 3.62-.375 5.086-1.454-1.604-.031-2.95-1.096-3.412-2.563.563.086 1.14.061 1.666-.049-1.676-.344-2.918-1.83-2.918-3.611.5.281 1.08.453 1.684.473-1.984-1.332-2.606-3.986-1.403-6.067 2.15 2.645 5.37 4.307 8.85 4.493-.063-.281-.094-.57-.094-.863 0-2.096 1.697-3.797 3.797-3.797 1.095 0 2.08.463 2.773 1.201.863-.17 1.676-.484 2.406-.918-.28.879-.873 1.613-1.65 2.076.754-.09 1.477-.29 2.15-.58-.502.754-1.134 1.41-1.95 1.936z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div> -->
+                </form>
+
+                <div class="text-center text-muted">
+                  Don't have an account?
+                  <a th:href="@{/register}" class="register-link"
+                    >Register here</a
+                  >
+                </div>
+              </div>
             </div>
-            <a href="#!" class="text-decoration-none">Forgot password?</a>
           </div>
-
-          <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-            Sign In
-          </button>
-
-          <div class="text-center text-muted">
-            Don't have an account?
-            <a th:href="@{/register}" class="text-decoration-none fw-bold"
-              >Register here</a
-            >
-          </div>
-        </form>
+        </div>
       </div>
     </div>
+    <div class="decorative-wave"></div>
   </body>
 </html>
-
-<!-- old -->
-
-<!-- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Your App Name</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --light: #f8f9fa;
-            --dark: #212529;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-image: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(63, 55, 201, 0.1));
-        }
-        
-        .login-container {
-            width: 100%;
-            max-width: 450px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 3rem;
-            text-align: center;
-        }
-        
-        .logo {
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            font-size: 2rem;
-            font-weight: 600;
-        }
-        
-        .form-header {
-            margin-bottom: 2rem;
-        }
-        
-        .form-header h2 {
-            color: var(--dark);
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-header p {
-            color: #6c757d;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-            font-weight: 500;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-        
-        .remember-me {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .remember-me input {
-            margin-right: 0.5rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--secondary);
-        }
-        
-        .auth-switch {
-            margin-top: 1.5rem;
-            color: #6c757d;
-        }
-        
-        .auth-switch a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .auth-switch a:hover {
-            text-decoration: underline;
-        }
-        
-        .social-login {
-            margin-top: 2rem;
-        }
-        
-        .social-login p {
-            color: #6c757d;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-        
-        .social-login p::before,
-        .social-login p::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 30%;
-            height: 1px;
-            background-color: #dee2e6;
-        }
-        
-        .social-login p::before {
-            left: 0;
-        }
-        
-        .social-login p::after {
-            right: 0;
-        }
-        
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-        
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f8f9fa;
-            color: var(--dark);
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        
-        .social-icon:hover {
-            background-color: #e9ecef;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <div class="logo">YourLogo</div>
-        
-        <div class="form-header">
-            <h2>Welcome Back</h2>
-            <p>Please enter your credentials to login</p>
-        </div>
-        
-        <form th:action="@{/login}" method="post">
-            <div class="form-group">
-                <label for="login-email">Email</label>
-                <input type="email" id="login-email" name="username" class="form-control" placeholder="your@email.com" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" name="password" class="form-control" placeholder="••••••••" required>
-            </div>
-            
-            <div class="remember-me">
-                <input type="checkbox" id="remember-me" name="remember-me">
-                <label for="remember-me">Remember me</label>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        
-        <div class="auth-switch">
-            Don't have an account? <a th:href="@{/register}">Sign up</a>
-        </div>
-        
-        <div class="social-login">
-            <p>Or login with</p>
-            <div class="social-icons">
-                <a href="#" class="social-icon">G</a>
-                <a href="#" class="social-icon">f</a>
-                <a href="#" class="social-icon">in</a>
-            </div>
-        </div>
-    </div>
-</body>
-</html> -->

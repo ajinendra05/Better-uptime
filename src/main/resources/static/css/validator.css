@@ -121,7 +121,9 @@ body {
   gap: 0.75rem;
   width: 100%;
 }
-
+.bg-transparent-grey {
+    background-color: rgba(128, 128, 128, 0.2);
+}
 .auth-btn:hover {
   background: #059669;
   transform: translateY(-1px);
@@ -168,4 +170,25 @@ body {
     margin: 1rem;
     padding: 1.5rem;
   }
+}
+
+
+
+.status-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.bg-transparent-grey {
+    background-color: rgba(211, 211, 211, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.uptime-history {
+    min-width: 100%;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
 }

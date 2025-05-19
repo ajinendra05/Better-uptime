@@ -58,13 +58,17 @@ public class SecurityConfig {
                                                 .tokenValiditySeconds(86400)
                                                 .userDetailsService(userDetailsService))
                                 // .sessionManagement(session -> session
-                                //                 .maximumSessions(1)
-                                //                 .expiredUrl("/login?expired"))
+                                // .maximumSessions(1)
+                                // .expiredUrl("/login?expired"))
                                 .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-            )
+                                                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                                 .exceptionHandling(exceptions -> exceptions
                                                 .accessDeniedPage("/access-denied"));
+                // .csrf(csrf -> csrf.disable())
+                // // .authorizeHttpRequests(auth -> auth
+                // // .anyRequest().permitAll())
+                // .headers(headers -> headers
+                // .frameOptions(frame -> frame.disable()));
 
                 return http.build();
         }

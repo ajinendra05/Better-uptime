@@ -235,3 +235,15 @@ body {
   background-color: #f2faff81;
   padding: 10px 20px;
 }
+
+.outer-webItem-card {
+  background-color: #f0f0f000;
+}
+.inner-webItem-card {
+  background-color: #f5f5f5ce;
+  /* padding: 10px 20px; */
+}
+.inner-webItem-card2 {
+  background-color: #f3f3f3e0;
+  /* padding: 10px 20px; */
+}

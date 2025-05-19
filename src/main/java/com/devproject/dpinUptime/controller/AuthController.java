@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.devproject.dpinUptime.model.User;
 import com.devproject.dpinUptime.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @Controller
 public class AuthController {
@@ -24,11 +25,32 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return "redirect:/login";
+    public String registerUser(@ModelAttribute User user, Model model) {
+        // Check if email already exists
+        if (userRepository.existsByEmail(user.getEmail())) {
+            model.addAttribute("error", "Email already registered");
+            return "register";
+        }
+
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            // user.setRole("USER");
+            userRepository.save(user);
+            return "redirect:/login?success";
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("error", "Email already registered");
+            return "register";
+        } catch (Exception e) {
+            model.addAttribute("error", "An error occurred during registration");
+            return "register";
+        }
     }
+    // @PostMapping("/register")
+    // public String registerUser(@ModelAttribute User user) {
+    // user.setPassword(passwordEncoder.encode(user.getPassword()));
+    // userRepository.save(user);
+    // return "redirect:/login";
+    // }
 
     @GetMapping("/login")
     public String loginForm() {

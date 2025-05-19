@@ -10,12 +10,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.EnumType;
 
 @Entity
@@ -34,16 +36,20 @@ public class MonitoredUrl {
     @Column(nullable = false)
     private boolean disabled = false;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "uptime_history", joinColumns = @JoinColumn(name = "url_id"))
-    @Embedded
+    @OrderColumn(name = "entry_order")
     public List<UptimeHistoryEntry> uptimeHistory = new ArrayList<>();
 
     public void addHistoryEntry(UptimeHistoryEntry entry) {
-        if (uptimeHistory.size() >= 30) {
+        if (uptimeHistory.size() >= 20) {
             uptimeHistory.remove(0);
         }
         uptimeHistory.add(entry);
+    }
+
+    public List<UptimeHistoryEntry> getUptimeHistory() {
+        return uptimeHistory;
     }
 
     public MonitoredUrl() {

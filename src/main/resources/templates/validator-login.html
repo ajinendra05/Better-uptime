@@ -28,93 +28,100 @@
             <i class="fas fa-fingerprint"></i>
             <span>Authenticate as Validator</span>
           </button>
+          <div class="proccess-message" id="messageContainer"></div>
         </div>
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <script th:src="@{/js/validatorClient.js}"></script>
+    <script th:src="@{/js/script.js}"></script>
 
+    <!-- <script src=@{/js/script.js}></script>
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
     <script>
-      let publicKey = null;
+  //     let publicKey = null;
 
-      document
-        .getElementById("connectWallet")
-        .addEventListener("click", async () => {
-          try {
-            const provider = window.solana;
-            if (!provider?.isPhantom)
-              throw new Error("Phantom Wallet required");
+  //     document
+  //       .getElementById("connectWallet")
+  //       .addEventListener("click", async () => {
+  //         try {
+  //           const provider = window.solana;
+  //           if (!provider?.isPhantom)
+  //             throw new Error("Phantom Wallet required");
 
-            await provider.connect();
-            publicKey = provider.publicKey.toString();
-            document.getElementById("authenticateBtn").disabled = false;
-            showSuccess("Wallet connected!");
-          } catch (error) {
-            showError(error.message);
-          }
-        });
+  //           await provider.connect();
+  //           publicKey = provider.publicKey.toString();
+  //           document.getElementById("authenticateBtn").disabled = false;
+  //           showSuccess("Wallet connected!");
+  //         } catch (error) {
+  //           showError(error.message);
+  //         }
+  //       });
 
-      document
-        .getElementById("authenticateBtn")
-        .addEventListener("click", async () => {
-          try {
-            const callbackId = generateUUID();
-            const message = `Signed message for ${callbackId}, ${publicKey}`;
-            const encodedMessage = new TextEncoder().encode(message);
-            const signature = await provider.signMessage(encodedMessage);
-            const base64Signature = btoa(
-              String.fromCharCode(...new Uint8Array(signature.signature))
-            );
+  //     document
+  //       .getElementById("authenticateBtn")
+  //       .addEventListener("click", async () => {
+  //         try {
+  //           const callbackId = generateUUID();
+  //           const message = `Signed message for ${callbackId}, ${publicKey}`;
+  //           const encodedMessage = new TextEncoder().encode(message);
+  //           const signature = await provider.signMessage(encodedMessage);
+  //           const base64Signature = btoa(
+  //             String.fromCharCode(...new Uint8Array(signature.signature))
+  //           );
 
-            const response = await fetch("/validator/login", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                publicKey: publicKey,
-                ip: "127.0.0.1",
-                message: message,
-                signature: base64Signature,
-              }),
-            });
+  //           const response = await fetch("/validator/login", {
+  //             method: "POST",
+  //             headers: { "Content-Type": "application/json" },
+  //             body: JSON.stringify({
+  //               publicKey: publicKey,
+  //               ip: "127.0.0.1",
+  //               message: message,
+  //               signature: base64Signature,
+  //             }),
+  //           });
 
-            if (response.ok) {
-              window.location.href = "/validator/dashboard";
-            } else {
-              throw new Error(await response.text());
-            }
-          } catch (error) {
-            showError(error.message);
-          }
-        });
+  //           if (response.ok) {
+  //             window.location.href = "/validator/dashboard";
+  //           } else {
+  //             throw new Error(await response.text());
+  //           }
+  //         } catch (error) {
+  //           showError(error.message);
+  //         }
+  //       });
 
-      // Helper functions
-      function generateUUID() {
-        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-          /[xy]/g,
-          function (c) {
-            const r = (Math.random() * 16) | 0,
-              v = c === "x" ? r : (r & 0x3) | 0x8;
-            return v.toString(16);
-          }
-        );
-      }
-      function showError(message) {
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "alert alert-error";
-        errorDiv.innerHTML = `
-                <i class="fas fa-exclamation-circle"></i>
-                <span>${message}</span>
-            `;
-        document.querySelector(".wallet-connection-error").prepend(errorDiv);
-      }
-      function showSuccess(message) {
-        const successDiv = document.createElement("div");
-        successDiv.className = "alert alert-success";
-        successDiv.innerHTML = `
-    <i class="fas fa-check-circle"></i>
-    <span>${message}</span>
-  `;
-        document.querySelector(".wallet-connect-section").prepend(successDiv);
-      }
-    </script>
+  //     // Helper functions
+  //     function generateUUID() {
+  //       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+  //         /[xy]/g,
+  //         function (c) {
+  //           const r = (Math.random() * 16) | 0,
+  //             v = c === "x" ? r : (r & 0x3) | 0x8;
+  //           return v.toString(16);
+  //         }
+  //       );
+  //     }
+  //     function showError(message) {
+  //       const errorDiv = document.createElement("div");
+  //       errorDiv.className = "alert alert-error";
+  //       errorDiv.innerHTML = `
+  //               <i class="fas fa-exclamation-circle"></i>
+  //               <span>${message}</span>
+  //           `;
+  //       document.querySelector(".wallet-connection-error").prepend(errorDiv);
+  //     }
+  //     function showSuccess(message) {
+  //       const successDiv = document.createElement("div");
+  //       successDiv.className = "alert alert-success";
+  //       successDiv.innerHTML = `
+  //   <i class="fas fa-check-circle"></i>
+  //   <span>${message}</span>
+  // `;
+  //       document.querySelector(".wallet-connect-section").prepend(successDiv);
+  //     }
+    </script> -->
   </body>
 </html>

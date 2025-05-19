@@ -25,6 +25,7 @@ public class Validator {
     public Validator(String publicKey, String ip) {
         this.publicKey = publicKey;
         this.ip = ip;
+        this.pendingPayout = 0L;
     }
 
     public Long getId() {
