@@ -7,17 +7,12 @@ public class ValidateRequest {
 
     // Getters, setters, constructor
  
-    // Constructor to match the instantiation in HubController
     public ValidateRequest(String url, String callbackId, Long id) {
         this.url = url;
         this.callbackId = callbackId;
         this.websiteId = id;
     }
-    // public ValidateRequest(String url, String callbackId, Long websiteId) {
-    // this.url = url;
-    // this.callbackId = callbackId;
-    // this.websiteId = websiteId;
-    // }
+
 
     public String getUrl() {
         return url;

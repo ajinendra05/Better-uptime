@@ -153,6 +153,7 @@ class ValidatorClient {
       this.callbacks.set(callbackId, (response) => {
         this.validatorId = response.validatorId;
         showSuccess("Validator registered successfully!");
+        window.location.href = "/validator/dashboard";
       });
     } catch (error) {
       showError("Signing failed: " + error.message);

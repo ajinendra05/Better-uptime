@@ -1,7 +1,6 @@
 package com.devproject.dpinUptime.DTO.ValidatorsDTO;
 
 public class SignupRequest {
-    // private String message;
     private String publicKey;
     private String signature;
     private String ip;
@@ -10,7 +9,6 @@ public class SignupRequest {
     // Getters, setters
 
     public SignupRequest(String publicKey, String signature, String ip, String callbackId) {
-        // this.message = message;
         this.publicKey = publicKey;
         this.signature = signature;
         this.ip = ip;
@@ -24,13 +22,7 @@ public class SignupRequest {
     public void setCallbackId(String callbackId) {
         this.callbackId = callbackId;
     }
-    // public String getMessage() {
-    // return message;
-    // }
-
-    // public void setMessage(String message) {
-    // this.message = message;
-    // }
+ 
 
     public String getPublicKey() {
         return publicKey;

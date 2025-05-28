@@ -45,12 +45,6 @@ public class AuthController {
             return "register";
         }
     }
-    // @PostMapping("/register")
-    // public String registerUser(@ModelAttribute User user) {
-    // user.setPassword(passwordEncoder.encode(user.getPassword()));
-    // userRepository.save(user);
-    // return "redirect:/login";
-    // }
 
     @GetMapping("/login")
     public String loginForm() {

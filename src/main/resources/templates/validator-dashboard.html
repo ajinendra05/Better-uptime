@@ -1,9 +1,7 @@
-<!-- templates/validator/dashboard.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Validator Dashboard | Uptime Monitor</title>
     <link th:href="@{/css/validator_dashboard.css}" rel="stylesheet" />
     <link
@@ -12,58 +10,73 @@
     />
   </head>
   <body>
-    <nav class="dashboard-nav">
-      <div class="nav-brand">Validator Dashboard</div>
-      <button id="disconnectBtn" class="btn-danger">
-        <i class="fas fa-plug"></i> Disconnect
-      </button>
-    </nav>
-
     <div class="dashboard-container">
-      <!-- Status Overview -->
-      <div class="status-card">
-        <h3><i class="fas fa-tachometer-alt"></i> Performance Metrics</h3>
-        <div class="metrics-grid">
-          <div class="metric-item">
-            <div class="metric-value" id="pendingRequests">0</div>
-            <div class="metric-label">Pending Validations</div>
-          </div>
-          <div class="metric-item">
-            <div class="metric-value" id="successRate">100%</div>
-            <div class="metric-label">Success Rate</div>
-          </div>
-          <div class="metric-item">
-            <div class="metric-value" id="avgLatency">0ms</div>
-            <div class="metric-label">Avg. Latency</div>
-          </div>
+      <!-- Header Section -->
+      <header class="dashboard-header">
+        <h1>Validator Dashboard</h1>
+        <div class="wallet-info">
+          <span id="walletAddress"></span>
+          <span id="balance">Balance: 0 DPIN</span>
         </div>
-      </div>
+      </header>
 
-      <!-- Validation Queue -->
-      <div class="main-card">
-        <div class="card-header">
-          <h3><i class="fas fa-tasks"></i> Validation Queue</h3>
-          <div class="last-updated" id="lastUpdated">Updated: Just now</div>
+      <!-- Main Content -->
+      <div class="dashboard-content">
+        <!-- Server Setup Section -->
+        <div class="card server-setup">
+          <h2><i class="fas fa-server"></i> Server Setup</h2>
+          <div class="setup-steps">
+            <div class="step">
+              <h3>Step 1: Download Validator Node</h3>
+              <p>Download and install our validation server software:</p>
+              <a
+                th:href="@{/downloads/validator-node-v1.0.0}"
+                class="download-btn"
+              >
+                <i class="fas fa-download"></i> Download for Linux
+              </a>
+            </div>
+            <div class="step">
+              <h3>Step 2: Run the Server</h3>
+              <code class="terminal">
+                ./validator-node --public-key YOUR_PUBLIC_KEY --api-port 3000
+              </code>
+            </div>
+          </div>
+          <button id="verifyServerBtn" class="verify-btn">
+            <i class="fas fa-check-circle"></i> Verify Server Connection
+          </button>
         </div>
-        <div class="card-body">
-          <div id="validationQueue" class="queue-items">
+
+        <!-- Monitoring Section -->
+        <div class="card active-monitoring">
+          <h2><i class="fas fa-tasks"></i> Active Monitoring</h2>
+          <div class="url-list" id="activeUrls">
+            <div class="url-item header">
+              <span>URL</span>
+              <span>Status</span>
+              <span>Last Checked</span>
+            </div>
             <!-- Dynamic content will be inserted here -->
           </div>
-        </div>
-      </div>
-
-      <!-- Activity Feed -->
-      <div class="side-card">
-        <h3><i class="fas fa-history"></i> Recent Activity</h3>
-        <div id="activityFeed" class="activity-items">
-          <!-- Activity items will be inserted here -->
+          <div class="stats">
+            <div class="stat-item">
+              <i class="fas fa-clock"></i>
+              <span>Pending Checks: </span>
+              <span id="pendingChecks">0</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-coins"></i>
+              <span>Earned Credits: </span>
+              <span id="earnedCredits">0</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script th:src="@{/js/validatorClient.js}"></script>
-    <script>
-      
-    </script>
   </body>
 </html>
