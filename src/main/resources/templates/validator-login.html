@@ -10,7 +10,7 @@
     />
   </head>
   <body>
-    <div class="auth-container">
+    <div class="auth-container" id="authContainer">
       <div class="auth-card">
         <div class="auth-header">
           <h1>Validator Portal</h1>
@@ -29,6 +29,97 @@
             <span>Authenticate as Validator</span>
           </button>
           <div class="proccess-message" id="messageContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard-container hidden" id="dashboardContainer">
+      <!-- Header Section -->
+      <header class="dashboard-header">
+        <h1>Validator Dashboard</h1>
+        <div class="wallet-info">
+          <!-- <span id="walletAddress"></span> -->
+          <span id="balance">Balance: 0 DPIN</span>
+          <!-- In dashboard.html -->
+          <div class="stats">
+            <button id="checkBalanceBtn" class="stat-item">
+              <i class="fas fa-sync-alt"></i>
+              <span>Check Pending Balance</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <div class="dashboard-content">
+        <!-- Server Setup Section -->
+        <div class="card server-setup">
+          <h2><i class="fas fa-server"></i> Server Setup</h2>
+          <div class="setup-steps">
+           <div class="step">
+  <h3>Step 1: Download Status Checker Server</h3>
+  <p>Download and Run our validation server software:</p>
+
+  <div class="download-links">
+    <a href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-windows.exe"
+       class="download-btn" download>
+      <i class="fas fa-download"></i> Download for Windows
+    </a>
+
+    <a href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-mac-intel"
+       class="download-btn" download>
+      <i class="fas fa-download"></i> Download for mac-intel
+    </a>
+
+    <a href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-mac-m1"
+       class="download-btn" download>
+      <i class="fas fa-download"></i> Download for mac-m1
+    </a>
+
+    <a href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-linux"
+       class="download-btn" download>
+      <i class="fas fa-download"></i> Download for Linux
+    </a>
+  </div>
+</div>
+
+
+            <!-- <div class="step">
+              <h3>Step 2: Run the Server</h3>
+              <code class="terminal">
+                ./validator-node --public-key YOUR_PUBLIC_KEY --api-port 3000
+              </code>
+            </div> -->
+          </div>
+          <button id="verifyServerBtn" class="verify-btn">
+            <i class="fas fa-check-circle"></i> Verify Server Connection
+          </button>
+        </div>
+
+        <!-- Monitoring Section -->
+        <div class="card active-monitoring">
+          <h2><i class="fas fa-tasks"></i> Active Monitoring</h2>
+          <div class="url-list" id="activeUrls">
+            <div class="url-item header">
+              <span>URL</span>
+              <span>Status</span>
+              <span>Last Checked</span>
+            </div>
+            <!-- Dynamic content will be inserted here -->
+          </div>
+          <div class="stats">
+            <div class="stat-item">
+              <i class="fas fa-clock"></i>
+              <span>Pending Checks: </span>
+              <span id="pendingChecks">0</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-coins"></i>
+              <span>Earned Credits: </span>
+              <span id="earnedCredits">0</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

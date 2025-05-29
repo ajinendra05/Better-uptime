@@ -80,7 +80,6 @@ public class HubController {
 
             activeValidators.put(headers.getSessionId(), session);
 
-
             messagingTemplate.convertAndSendToUser(
                     session.getSessionId(),
                     "/queue/signup",
@@ -124,8 +123,7 @@ public class HubController {
                     if (!verifyResponseSignature(response, validator))
                         return;
                     if (response.getStatus() == Status.SUCCESS) {
-                    }
-                    else {
+                    } else {
                     }
 
                     websiteTickService.saveTick(
@@ -145,6 +143,49 @@ public class HubController {
                                 website.getId()));
             });
         });
+    }
+
+    // @MessageMapping("validator/balance")
+    // public void updateValidatorBalance(String publicKey) {
+    // Validator validator = validatorService.getValidator(publicKey);
+    // long totalBalance = 0;
+    // activeValidators.values().stream()
+    // .forEach(session -> {
+    // totalBalance += validator.getPendingPayout();
+    // });
+    // messagingTemplate.convertAndSendToUser(
+    // "",
+    // "/queue/balance-updates",
+    // Map.of("pendingBalance", totalBalance));
+    // }
+
+    @MessageMapping("/validator/balance")
+    public void updateValidatorBalance(Map<String, String> payload, StompHeaderAccessor headers) {
+        try {
+            // 1. Get the validator by public key
+            String publicKey = payload.get("publicKey");
+            Validator validator = validatorService.getValidator(publicKey);
+            if (validator == null) {
+                sendError(headers.getSessionId(), "Validator not found");
+                return;
+            }
+
+            // 2. Get the pending balance for this specific validator
+            long pendingBalance = validator.getPendingPayout();
+
+            // 3. Find all active sessions for this validator
+            activeValidators.values().stream()
+                    .filter(session -> session.getPublicKey().equals(publicKey))
+                    .forEach(session -> {
+                        // 4. Send balance update to each session
+                        messagingTemplate.convertAndSendToUser(
+                                session.getSessionId(),
+                                "/queue/balance-updates",
+                                Map.of("pendingBalance", pendingBalance));
+                    });
+        } catch (Exception e) {
+            sendError(headers.getSessionId(), "Failed to update balance: " + e.getMessage());
+        }
     }
 
     private boolean verifyResponseSignature(ValidateResponse response, ValidatorSession validator) {

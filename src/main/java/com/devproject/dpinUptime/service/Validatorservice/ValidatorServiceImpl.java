@@ -1,6 +1,5 @@
 package com.devproject.dpinUptime.service.Validatorservice;
 
-
 import com.devproject.dpinUptime.model.Validator;
 
 import org.springframework.stereotype.Service;
@@ -19,9 +18,15 @@ public class ValidatorServiceImpl implements ValidatorService {
     @Transactional
     public Validator getOrCreateValidator(String publicKey, String ip) {
         return validatorRepository.findByPublicKey(publicKey)
-            .orElseGet(() -> validatorRepository.save(
-                new Validator(publicKey, ip)
-            ));
+                .orElseGet(() -> validatorRepository.save(
+                        new Validator(publicKey, ip)));
+    }
+
+    @Transactional
+    public Validator getValidator(String publicKey) {
+        return validatorRepository.findByPublicKey(publicKey)
+                .orElseGet(() -> validatorRepository.save(
+                        new Validator(publicKey, "")));
     }
 
     @Override

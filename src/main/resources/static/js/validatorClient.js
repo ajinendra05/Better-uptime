@@ -8,6 +8,7 @@ class ValidatorClient {
     this.isAuthenticating = false;
     this.provider = null;
     this.signMessage = null;
+    this.isServerVerified = false;
   }
   async initializeProvider() {
     if (!this.provider) {
@@ -115,7 +116,15 @@ class ValidatorClient {
       const data = JSON.parse(response.body);
       this.handleValidationRequest(data);
     });
+    this.stompClient.subscribe("/user/queue/url-updates", (response) => {
+      const data = JSON.parse(response.body);
+      this.handleUrlUpdate(data);
+    });
 
+    this.stompClient.subscribe("/user/queue/balance-updates", (response) => {
+      const data = JSON.parse(response.body);
+      this.updateBalance(data);
+    });
     this.stompClient.subscribe("/user/queue/errors", (response) => {
       const error = JSON.parse(response.body);
       showError(error.message);
@@ -153,7 +162,8 @@ class ValidatorClient {
       this.callbacks.set(callbackId, (response) => {
         this.validatorId = response.validatorId;
         showSuccess("Validator registered successfully!");
-        window.location.href = "/validator/dashboard";
+        // window.location.href = "/validator/dashboard";
+        this.showDashboard();
       });
     } catch (error) {
       showError("Signing failed: " + error.message);
@@ -161,10 +171,13 @@ class ValidatorClient {
   }
 
   async handleValidationRequest(request) {
-    console.log("Received validation request:", request);
+    this.updateUrlList({
+      websiteId: request.websiteId,
+      url: request.url,
+      status: "CHECKING",
+    });
     const { callbackId, url } = request;
-    console.log("Callback ID:", callbackId);
-    console.log("URL:", url);
+
     const message = `Replying to ${request.callbackId}`;
     const encodedMessage = new TextEncoder().encode(message);
     const { signature } = await this.provider.signMessage(encodedMessage);
@@ -188,6 +201,11 @@ class ValidatorClient {
           websiteId: request.websiteId,
         })
       );
+      this.updateUrlList({
+        websiteId: request.websiteId,
+        url: request.url,
+        status: response.ok ? "SUCCESS" : "FAILURE",
+      });
     } catch (error) {
       console.log("Validation error:", error);
       try {
@@ -208,7 +226,11 @@ class ValidatorClient {
             websiteId: request.websiteId,
           })
         );
-
+        this.updateUrlList({
+          websiteId: request.websiteId,
+          url: request.url,
+          status: response.ok ? "SUCCESS" : "FAILURE",
+        });
         console.log("CORS proxy response:", result);
       } catch (error) {
         this.stompClient.send(
@@ -222,6 +244,11 @@ class ValidatorClient {
             websiteId: request.websiteId,
           })
         );
+        this.updateUrlList({
+          websiteId: request.websiteId,
+          url: request.url,
+          status: "FAILURE",
+        });
       }
     }
   }
@@ -301,6 +328,154 @@ class ValidatorClient {
   handleConnectionError(error) {
     showError("WebSocket connection error: " + error.toString());
     setTimeout(() => this.connect(), 5000); // Reconnect after 5 seconds
+  }
+  updateUrlList(urlInfo) {
+    if (!this.isDashboardVisible) return;
+
+    const urlList = document.getElementById("activeUrls");
+    const existingItem = Array.from(urlList.children).find(
+      (item) => item.dataset.websiteId === urlInfo.websiteId
+    );
+
+    const urlItem = document.createElement("div");
+    urlItem.className = `url-item ${urlInfo.status.toLowerCase()}`;
+    urlItem.dataset.websiteId = urlInfo.websiteId;
+    urlItem.innerHTML = `
+      <span>${urlInfo.url}</span>
+      <span class="status">${urlInfo.status}</span>
+      <span>${new Date().toLocaleTimeString()}</span>
+    `;
+
+    if (existingItem) {
+      urlList.replaceChild(urlItem, existingItem);
+    } else {
+      urlList.appendChild(urlItem);
+    }
+
+    // Update pending checks count
+    const pendingCount = document.querySelectorAll(
+      ".url-item:not(.header)"
+    ).length;
+    document.getElementById("pendingChecks").textContent = pendingCount;
+  }
+  // handleUrlUpdate(urlInfo) {
+  //   if (window.location.pathname === "/validator/dashboard") {
+  //     const event = new CustomEvent("urlUpdate", { detail: urlInfo });
+  //     document.dispatchEvent(event);
+  //   }
+  // }
+
+  // handleBalanceUpdate(balanceInfo) {
+  //   if (window.location.pathname === "/validator/dashboard") {
+  //     const event = new CustomEvent("balanceUpdate", {
+  //       detail: {
+  //         pendingBalance: balanceInfo.pendingBalance,
+  //         totalEarned: balanceInfo.totalEarned,
+  //       },
+  //     });
+  //     document.dispatchEvent(event);
+  //   }
+  // }
+
+  updateBalance(balanceInfo) {
+    if (!this.isDashboardVisible) return;
+    console.log("bslanceeeeeeee");
+    console.log(balanceInfo.pendingBalance);
+    document.getElementById(
+      "balance"
+    ).textContent = `Balance: ${balanceInfo.pendingBalance} DPIN`;
+  }
+  showDashboard() {
+    this.isDashboardVisible = true;
+    sessionStorage.setItem("validatorId", this.validatorId);
+    sessionStorage.setItem("publicKey", this.publicKey);
+
+    document.getElementById("authContainer").classList.add("hidden");
+    document.getElementById("dashboardContainer").classList.remove("hidden");
+
+    // Initialize dashboard
+    // document.getElementById(
+    //   "walletAddress"
+    // ).textContent = `${this.publicKey.substring(0, 6)}...${this.publicKey.slice(
+    //   -4
+    // )}`;
+
+    this.fetchBalance();
+    this.setupDashboardListeners();
+  }
+  initDashboard() {
+    // Populate dashboard data
+    // document.getElementById(
+    //   "walletAddress"
+    // ).textContent = `${this.publicKey.substring(0, 6)}...${this.publicKey.slice(
+    //   -4
+    // )}`;
+
+    // Load initial balance
+    this.fetchBalance();
+
+    // Setup dashboard WebSocket subscriptions
+    // this.stompClient.subscribe("/user/queue/dashboard", (message) => {
+    //   this.handleDashboardUpdate(JSON.parse(message.body));
+    // });
+  }
+  async fetchBalance() {
+    try {
+      this.stompClient.send(
+        "/app/validator/balance",
+        {},
+        JSON.stringify({
+          publicKey: this.publicKey,
+        })
+      );
+      document.getElementById(
+        "balance"
+      ).textContent = `Balance: ${data.pendingBalance} DPIN`;
+    } catch (error) {
+      console.error("Balance fetch failed:", error);
+    }
+  }
+
+  // handleDashboardUpdate(update) {
+  //   // Handle real-time updates
+  //   switch (update.type) {
+  //     case "BALANCE_UPDATE":
+  //       document.getElementById(
+  //         "balance"
+  //       ).textContent = `Balance: ${update.pendingBalance} DPIN`;
+  //       break;
+  //     case "URL_UPDATE":
+  //       this.updateUrlList(update.urlInfo);
+  //       break;
+  //   }
+  // }
+
+  setupDashboardListeners() {
+    document.getElementById("checkBalanceBtn").addEventListener("click", () => {
+      console.log("checking balnce");
+      this.fetchBalance();
+      showMessage("info", "Checking balance...", 2000);
+    });
+
+    // document
+    //   .getElementById("verifyServerBtn")
+    //   .addEventListener("click", async () => {
+    //     try {
+    //       showMessage("info", "Verifying server...", 0);
+    //       const response = await fetch("/validator/verify-server", {
+    //         method: "POST",
+    //       });
+
+    //       if (response.ok) {
+    //         this.isServerVerified = true;
+    //         showSuccess("Server verified successfully!", 2000);
+    //       } else {
+    //         throw new Error("Server verification failed");
+    //       }
+    //     } catch (error) {
+    //       showError(error.message);
+    //     }
+    //   });
   }
 }
 
