@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/uptime_db
-    username: ajinendra05
-    password: SpringBootPassword
+    url: jdbc:postgresql://postgres.railway.internal:5432/railway
+    username: postgres
+    password: BFaNVfwjYHeYPuxMYRrkfLqxWhIxyqiQ
   jpa:
     hibernate:
       ddl-auto: update
