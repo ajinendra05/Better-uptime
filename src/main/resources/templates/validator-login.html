@@ -36,7 +36,7 @@
     <!-- Dashboard -->
     <div class="dashboard-container hidden" id="dashboardContainer">
       <!-- Header Section -->
-      <header class="dashboard-header">
+      <header class="dashboard-header-new">
         <h1>Validator Dashboard</h1>
         <div class="wallet-info">
           <!-- <span id="walletAddress"></span> -->
@@ -57,33 +57,44 @@
         <div class="card server-setup">
           <h2><i class="fas fa-server"></i> Server Setup</h2>
           <div class="setup-steps">
-           <div class="step">
-  <h3>Step 1: Download Status Checker Server</h3>
-  <p>Download and Run our validation server software:</p>
+            <div class="step">
+              <h3>Step 1: Download Status Checker Server</h3>
+              <p>Download and Run our validation server software:</p>
 
-  <div class="download-links">
-    <a href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-windows.exe"
-       class="download-btn" download>
-      <i class="fas fa-download"></i> Download for Windows
-    </a>
+              <div class="download-links">
+                <a
+                  href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-windows.exe"
+                  class="download-btn"
+                  download
+                >
+                  <i class="fas fa-download"></i> Download for Windows
+                </a>
 
-    <a href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-mac-intel"
-       class="download-btn" download>
-      <i class="fas fa-download"></i> Download for mac-intel
-    </a>
+                <a
+                  href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-mac-intel"
+                  class="download-btn"
+                  download
+                >
+                  <i class="fas fa-download"></i> Download for mac-intel
+                </a>
 
-    <a href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-mac-m1"
-       class="download-btn" download>
-      <i class="fas fa-download"></i> Download for mac-m1
-    </a>
+                <a
+                  href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-mac-m1"
+                  class="download-btn"
+                  download
+                >
+                  <i class="fas fa-download"></i> Download for mac-m1
+                </a>
 
-    <a href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-linux"
-       class="download-btn" download>
-      <i class="fas fa-download"></i> Download for Linux
-    </a>
-  </div>
-</div>
-
+                <a
+                  href="https://github.com/ajinendra05/validator-status-checker-server/releases/download/untagged-223fd85afb474d997c32/status-checker-linux"
+                  class="download-btn"
+                  download
+                >
+                  <i class="fas fa-download"></i> Download for Linux
+                </a>
+              </div>
+            </div>
 
             <!-- <div class="step">
               <h3>Step 2: Run the Server</h3>
@@ -109,12 +120,12 @@
             <!-- Dynamic content will be inserted here -->
           </div>
           <div class="stats">
-            <div class="stat-item">
+            <div class="stat-item" id="state-item-below">
               <i class="fas fa-clock"></i>
-              <span>Pending Checks: </span>
+              <span>Url Checked: </span>
               <span id="pendingChecks">0</span>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" id="state-item-below">
               <i class="fas fa-coins"></i>
               <span>Earned Credits: </span>
               <span id="earnedCredits">0</span>

@@ -334,9 +334,16 @@ class ValidatorClient {
 
     const urlList = document.getElementById("activeUrls");
     const existingItem = Array.from(urlList.children).find(
-      (item) => item.dataset.websiteId === urlInfo.websiteId
+      (item) => item.dataset.websiteId === String(urlInfo.websiteId)
     );
-
+    let earnedCredits =
+      parseInt(document.getElementById("earnedCredits").textContent) || 0;
+    let urlchecked =
+      parseInt(document.getElementById("pendingChecks").textContent) || 0;
+    if (urlInfo.status != "CHECKING") {
+      earnedCredits += 100;
+      urlchecked += 1;
+    }
     const urlItem = document.createElement("div");
     urlItem.className = `url-item ${urlInfo.status.toLowerCase()}`;
     urlItem.dataset.websiteId = urlInfo.websiteId;
@@ -353,10 +360,9 @@ class ValidatorClient {
     }
 
     // Update pending checks count
-    const pendingCount = document.querySelectorAll(
-      ".url-item:not(.header)"
-    ).length;
-    document.getElementById("pendingChecks").textContent = pendingCount;
+
+    document.getElementById("pendingChecks").textContent = urlchecked;
+    document.getElementById("earnedCredits").textContent = earnedCredits;
   }
   // handleUrlUpdate(urlInfo) {
   //   if (window.location.pathname === "/validator/dashboard") {
