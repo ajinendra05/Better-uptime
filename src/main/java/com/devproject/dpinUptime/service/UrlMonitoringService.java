@@ -1,26 +1,16 @@
 package com.devproject.dpinUptime.service;
 
 import com.devproject.dpinUptime.model.MonitoredUrl;
-import com.devproject.dpinUptime.model.UrlStatus;
 import com.devproject.dpinUptime.repository.UrlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.net.URL;
-import java.io.IOException;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.beans.factory.annotation.Value;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 @Service
 public class UrlMonitoringService {
-    private static final Logger log = LoggerFactory.getLogger(UrlMonitoringService.class);
 
     @Autowired
     private UrlRepository urlRepository;
@@ -37,18 +27,18 @@ public class UrlMonitoringService {
     // @Async
     // @Scheduled(fixedRateString = "1800000")
     // public void monitorAllUrls() {
-    //     log.info("Starting URL monitoring...");
-    //     List<MonitoredUrl> urls = urlRepository.findAll();
-    //     urls.forEach(url -> {
-    //         UrlStatus previousStatus = url.getStatus();
-    //         boolean isUp = checkUrlStatus(url);
-    //         url.setLastChecked(LocalDateTime.now());
-    //         urlRepository.save(url);
+    // log.info("Starting URL monitoring...");
+    // List<MonitoredUrl> urls = urlRepository.findAll();
+    // urls.forEach(url -> {
+    // UrlStatus previousStatus = url.getStatus();
+    // boolean isUp = checkUrlStatus(url);
+    // url.setLastChecked(LocalDateTime.now());
+    // urlRepository.save(url);
 
-    //         if (previousStatus == UrlStatus.UP && !isUp) {
-    //             alertService.triggerAlert(url);
-    //         }
-    //     });
+    // if (previousStatus == UrlStatus.UP && !isUp) {
+    // alertService.triggerAlert(url);
+    // }
+    // });
     // }
 
     public void addUrl(MonitoredUrl url) {
@@ -56,27 +46,29 @@ public class UrlMonitoringService {
     }
 
     // private boolean checkUrlStatus(MonitoredUrl url) {
-    //     try {
-    //         HttpURLConnection connection = (HttpURLConnection) new URL(url.getUrl()).openConnection();
-    //         connection.setConnectTimeout(timeout);
-    //         connection.setReadTimeout(timeout);
-    //         connection.setInstanceFollowRedirects(false);
+    // try {
+    // HttpURLConnection connection = (HttpURLConnection) new
+    // URL(url.getUrl()).openConnection();
+    // connection.setConnectTimeout(timeout);
+    // connection.setReadTimeout(timeout);
+    // connection.setInstanceFollowRedirects(false);
 
-    //         int responseCode = connection.getResponseCode();
-    //         boolean isUp = (responseCode >= 200 && responseCode < 300);
-    //         url.setStatus(isUp ? UrlStatus.UP : UrlStatus.DOWN);
-    //         url.setResponseTime(measureResponseTime(connection));
-    //         return isUp;
-    //     } catch (IOException e) {
-    //         url.setStatus(UrlStatus.DOWN);
-    //         return false;
-    //     }
+    // int responseCode = connection.getResponseCode();
+    // boolean isUp = (responseCode >= 200 && responseCode < 300);
+    // url.setStatus(isUp ? UrlStatus.UP : UrlStatus.DOWN);
+    // url.setResponseTime(measureResponseTime(connection));
+    // return isUp;
+    // } catch (IOException e) {
+    // url.setStatus(UrlStatus.DOWN);
+    // return false;
+    // }
     // }
 
-    // private long measureResponseTime(HttpURLConnection connection) throws IOException {
-    //     long start = System.currentTimeMillis();
-    //     connection.connect();
-    //     return System.currentTimeMillis() - start;
+    // private long measureResponseTime(HttpURLConnection connection) throws
+    // IOException {
+    // long start = System.currentTimeMillis();
+    // connection.connect();
+    // return System.currentTimeMillis() - start;
     // }
 
     public List<MonitoredUrl> getUrlsForUser(String userEmail) {
@@ -85,6 +77,12 @@ public class UrlMonitoringService {
 
     public List<MonitoredUrl> getActiveUrl() {
         return urlRepository.findAll(); // Added method to get all URLs
+    }
+
+    public void deleteUrl(Long id, String userEmail) {
+        // Ensure user owns the URL before deleting
+        Optional<MonitoredUrl> url = urlRepository.findByIdAndUserEmail(id, userEmail);
+        url.ifPresent(urlRepository::delete);
     }
 
 }

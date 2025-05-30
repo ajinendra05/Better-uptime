@@ -15,4 +15,6 @@ public interface UrlRepository extends JpaRepository<MonitoredUrl, Long> {
 
     @Query("SELECT u FROM MonitoredUrl u LEFT JOIN FETCH u.uptimeHistory WHERE u.id = :id")
     Optional<MonitoredUrl> findByIdWithHistory(@Param("id") Long id);
+
+    Optional<MonitoredUrl> findByIdAndUserEmail(Long id, String userEmail);
 }

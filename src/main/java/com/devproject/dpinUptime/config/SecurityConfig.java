@@ -45,7 +45,7 @@ public class SecurityConfig {
                                                 .logoutUrl("/logout")
                                                 .logoutSuccessUrl("/login?logout")
                                                 .invalidateHttpSession(true)
-                                                .deleteCookies("JSESSIONID"))
+                                                .deleteCookies("JSESSIONID").permitAll())
                                 // .formLogin(form -> form
                                 // .loginPage("/validator/login"))
                                 .logout(logout -> logout
